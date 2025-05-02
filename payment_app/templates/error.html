@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Error{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <h2 class="text-danger">Oops! Something went wrong.</h2>
+    <p>{{ message|default:"There was a problem while processing your request. Please try again later." }}</p>
+    <a href="{% url 'payment_app:payment' %}" 
+       style="background-color: rgb(77, 157, 100); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px;">
+        Back to Payment
+    </a>
+</div>
+{% endblock %}

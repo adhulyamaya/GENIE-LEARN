@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="register-container">
+    <h2 class="title"><i class="ri-user-add-line"></i> Create Your Account</h2>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <p class="message-box {{ message.tags }}">
+                {{ message }}
+            </p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST" class="registration-form" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+
+        <div class="input-group">
+            <label for="full_name"><i class="ri-id-card-line"></i> Full Name</label>
+            <input type="text" name="full_name" id="full_name" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="input-group">
+            <label for="email"><i class="ri-mail-line"></i> Email Address</label>
+            <input type="email" name="email" id="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="input-group">
+            <label for="password1"><i class="ri-lock-line"></i> Password</label>
+            <input type="password" name="password1" id="password1" placeholder="Create a strong password" required>
+        </div>
+
+        <div class="input-group">
+            <label for="password2"><i class="ri-lock-password-line"></i> Confirm Password</label>
+            <input type="password" name="password2" id="password2" placeholder="Re-enter your password" required>
+            <p class="error-msg" id="password_error"></p>
+        </div>
+
+        <div class="input-group">
+            <label for="phone"><i class="ri-phone-line"></i> Phone Number</label>
+            <input type="tel" name="phone" id="phone" placeholder="Enter your phone number">
+        </div>
+
+        <div class="input-group">
+            <label for="occupation"><i class="ri-briefcase-line"></i> Profession</label>
+            <select name="occupation" id="occupation" required>
+                <option value="">Select your profession</option>
+                <option value="student">Student</option>
+                <option value="it_professional">IT & Software</option>
+                <option value="engineering">Engineering</option>
+                <option value="business">Business & Management</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="education">Education</option>
+                <option value="arts_media">Arts & Media</option>
+                <option value="freelancer">Freelancer</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="skills"><i class="ri-lightbulb-line"></i> Skills & Interests</label>
+            <select name="skills" id="skills" onchange="updateSubcategories()" required>
+                <option value="">Select a category</option>
+                <option value="academics">Academics</option>
+                <option value="technology">Technology</option>
+                <option value="arts_hobbies">Arts & Hobbies</option>
+                <option value="life_skills">Life Skills</option>
+                <option value="sports_fitness">Sports & Fitness</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="sub_category"><i class="ri-folder-line"></i> Specialization</label>
+            <select name="sub_category" id="sub_category" required>
+                <option value="">Select a sub-category</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="certificates_yes_no"><i class="ri-checkbox-line"></i> Do you hold any certifications?</label>
+            <select name="certificates_yes_no" id="certificates_yes_no" onchange="toggleCertificateUpload()">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+        </div>
+
+        <div class="input-group" id="certificate_upload" style="display: none;">
+            <label for="certificates"><i class="ri-upload-cloud-line"></i> Upload Certificate (PDF only)</label>
+            <input type="file" name="certificates" id="certificates" accept=".pdf">
+        </div>
+
+        <div class="input-group">
+            <label for="gender"><i class="ri-user-3-line"></i> Gender</label>
+            <select name="gender" id="gender" required>
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-outline"><i class="ri-check-line"></i> Register</button>
+    </form>
+</div>
+
+<style>
+    .register-container { max-width: 500px; margin: auto; padding: 20px; background: #2c2c2c; border-radius: 8px; color: white; }
+    .title { text-align: center; margin-bottom: 20px; }
+    .registration-form { display: flex; flex-direction: column; gap: 15px; }
+    .input-group { display: flex; flex-direction: column; }
+    label { font-weight: bold; margin-bottom: 5px; }
+    input, select { padding: 10px; border: 1px solid #444; border-radius: 5px; background: #444; color: white; }
+</style>
+
+<script>
+    function validateForm() {
+        let password = document.getElementById("password1").value;
+        let confirmPassword = document.getElementById("password2").value;
+        let passwordError = document.getElementById("password_error");
+
+        if (password !== confirmPassword) {
+            passwordError.innerText = "Passwords do not match.";
+            passwordError.style.display = "block";
+            return false;
+        }
+        return true;
+    }
+
+    function updateSubcategories() {
+        let subCategory = document.getElementById("sub_category");
+        let skills = document.getElementById("skills").value;
+        let options = {
+            academics: ["Math", "Science", "History"],
+            technology: ["Programming", "Cybersecurity", "AI"],
+            arts_hobbies: ["Painting", "Music", "Photography"],
+            life_skills: ["Leadership", "Communication"],
+            sports_fitness: ["Yoga", "Running", "Weightlifting"]
+        };
+        subCategory.innerHTML = options[skills] ? options[skills].map(opt => `<option value="${opt}">${opt}</option>`).join('') : `<option value="">Select a sub-category</option>`;
+    }
+
+    function toggleCertificateUpload() {
+        document.getElementById("certificate_upload").style.display =
+            document.getElementById("certificates_yes_no").value === "Yes" ? "block" : "none";
+    }
+</script>
+{% endblock %}
+

@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My App{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Styling */
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin:0px;
+            padding:0px;
+        }
+
+header a:hover, footer a:hover {
+    color: #00ffcc; /* Slightly lighter teal on hover */
+}
+
+
+        /* Navbar */
+        .navbar {
+            background-color: #121212; /* Dark background */
+            color: white; /* Text color */
+            padding: 20px;
+        }
+
+        .navbar-brand {
+            color: #00ffcc;
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: 'Playfair Display', serif;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 8px;
+        }
+
+        .nav-link {
+            color: #00ffcc;
+            font-size: 1rem;
+            margin-left: 15px;
+        }
+
+        .nav-link:hover {
+            background-color: #00ffcc; /* Slightly lighter teal on hover */
+            color: black;
+            transition: 0.3s;
+            border-radius:5px;
+        }
+
+        .btn-outline {
+            border: 2px solid;
+            border-color:#00ffcc;
+            color: #00ffcc; /* Slightly lighter teal on hover */
+        }
+
+        h2{
+            color:#00ffcc;
+        }
+
+        .btn-outline:hover {
+            background-color: #00ffcc; /* Slightly lighter teal on hover */
+            color: black;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #121212; /* Dark background */
+            color: white; /* Text color */
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: #00ffcc;
+        }
+
+        .footer-bottom {
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'images/logo11.png' %}" alt="Genie Learn AI Logo" class="img-fluid" style="height: 50px; max-height: 100px; object-fit: contain;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+    <a class="nav-link" href="{% url 'index' %}">
+        <i class="ri-home-4-line"></i> Home
+    </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'user_app:features' %}">
+            <i class="ri-lightbulb-line"></i> Features
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'user_app:subscriptions' %}">
+            <i class="ri-vip-crown-line"></i> Subscriptions
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'user_app:support' %}">
+            <i class="ri-headphone-line"></i> Support
+        </a>
+    </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-outline ms-3" href="/admin/login">
+                        <i class="ri-admin-line"></i> Admin
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    {% block content %}
+    
+    {% endblock %}
+</div>
+
+<!-- Footer -->
+<footer>
+
+
+    <div class="container">
+        <p>&copy; 2025 Genie Learn AI. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="/privacy-policy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a>
+        </div>
+        <p>Payment Partners: 
+            <i class="ri-paypal-fill" style = "color:#00ffcc;"></i> 
+            <i class="ri-visa-line" style = "color:#00ffcc;"></i> 
+            <i class="ri-mastercard-fill" style = "color:#00ffcc;"></i>
+        </p>
+        <p>
+            Follow us: 
+            <a href="#" class="ms-2" style="text-decoration:none; "><i class="ri-facebook-box-fill" style = "color:#00ffcc; " ></i></a>
+            <a href="#" class="ms-2" style="text-decoration:none;"><i class="ri-instagram-line" style = "color:#00ffcc;"></i></a>
+            <a href="#" class="ms-2" style="text-decoration:none;"><i class= "ri-twitter-fill" style = "color:#00ffcc;"> </i></a>
+        </p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

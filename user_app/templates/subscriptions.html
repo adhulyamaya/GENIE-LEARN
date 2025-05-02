@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}GenieLearn AI - Subscription Plans{% endblock %}
+
+{% block content %}
+<section class="container mt-5 p-5 rounded" style="background: rgba(255, 255, 255, 0.1); border-radius: 15px;">
+    <h2 class="fw-bold text-center" style="color: #2c3e50;">
+        <i class="ri-vip-crown-fill"></i> Choose Your Subscription Plan
+    </h2>
+    <p class="text-  text-center">Find the perfect plan tailored to your learning journey.</p>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4">
+            <div class="p-4 text-center shadow-lg rounded" style="background: #f8f9fa;">
+                <h4 class="fw-bold">Free Plan</h4>
+                <p class="text- ">Ideal for beginners exploring our platform.</p>
+                <hr>
+                <ul class="list-unstyled">
+                    <li><i class="ri-check-line text-success"></i> Access to basic courses</li>
+                    <li><i class="ri-close-line text-danger"></i> No premium content</li>
+                    <li><i class="ri-time-line text-warning"></i> Limited AI assistance</li>
+                    <li><i class="ri-group-line text-secondary"></i> Community access</li>
+                </ul>
+                <button class="btn btn-outline-primary">Get Started</button>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 text-center shadow-lg rounded" style="background: #fff3cd;">
+                <h4 class="fw-bold">Pro Plan</h4>
+                <p class="text- ">For dedicated learners looking for a full learning experience.</p>
+                <hr>
+                <ul class="list-unstyled">
+                    <li><i class="ri-check-line text-success"></i> Full course access</li>
+                    <li><i class="ri-check-line text-success"></i> AI-powered tutor</li>
+                    <li><i class="ri-check-line text-success"></i> Priority support</li>
+                    <li><i class="ri-check-line text-success"></i> Certificate of completion</li>
+                </ul>
+                <button class="btn btn-warning">Subscribe Now</button>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 text-center shadow-lg rounded" style="background: #d4edda;">
+                <h4 class="fw-bold">Premium Plan</h4>
+                <p class="text- ">For serious learners seeking one-on-one mentorship.</p>
+                <hr>
+                <ul class="list-unstyled">
+                    <li><i class="ri-check-line text-success"></i> All Pro features</li>
+                    <li><i class="ri-check-line text-success"></i> Personalized coaching</li>
+                    <li><i class="ri-check-line text-success"></i> Live Q&A sessions</li>
+                    <li><i class="ri-check-line text-success"></i> Career guidance & internships</li>
+                </ul>
+                <button class="btn btn-success">Upgrade Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Why Choose GenieLearn AI Section -->
+    <div class="mt-5 text-center">
+        <h3 class="fw-bold">Why Choose GenieLearn AI?</h3>
+        <p class="text- ">Empowering learners with AI-driven personalized education.</p>
+
+        <div class="row justify-content-center">
+            <div class="col-md-3 text-center">
+                <i class="ri-book-open-line text-primary display-4"></i>
+                <h5 class="mt-2">Personalized Learning</h5>
+                <p class="text- ">AI-driven course recommendations based on your interests and progress.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <i class="ri-lightbulb-flash-line text-warning display-4"></i>
+                <h5 class="mt-2">AI-Powered Tutor</h5>
+                <p class="text- ">Receive instant feedback and adaptive assessments.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <i class="ri-group-line text-success display-4"></i>
+                <h5 class="mt-2">Community & Mentors</h5>
+                <p class="text- ">Engage with experts and fellow learners through discussions.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <i class="ri-headphone-line text-danger display-4"></i>
+                <h5 class="mt-2">24/7 Support</h5>
+                <p class="text- ">Get assistance whenever you need it.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="mt-5 text-center">
+        <h3 class="fw-bold text-primary">Join GenieLearn AI Today</h3>
+        <p class="text- ">Enhance your learning experience with our AI-powered platform.</p>
+        <button class="btn btn-lg btn-primary">Start Learning Now</button>
+    </div>
+</section>
+{% endblock %}

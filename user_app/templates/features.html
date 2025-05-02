@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}GenieLearn AI - Transforming the Future of Education{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2 class="fw-bold" >Experience the Future of Learning with GenieLearn AI</h2>
+    <p style="rgb(82, 90, 90)">Discover how our cutting-edge platform enhances learning.</p>
+</div>
+
+<!-- AI-Powered Learning -->
+<div class="container mt-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <i class="ri-brain-line feature-icon"></i>
+            <h4 class="fw-bold">AI-Powered Learning</h4>
+            <p>Our AI-driven platform personalizes your study materials, adapting to your learning style for maximum efficiency.</p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{% static 'images/ai-learning.svg' %}" alt="AI Learning" class="img-fluid" style="max-width: 80%;">
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Quizzes -->
+<div class="container mt-5">
+    <div class="row align-items-center flex-md-row-reverse">
+        <div class="col-md-6">
+            <i class="ri-questionnaire-line feature-icon"></i>
+            <h4 class="fw-bold">Interactive Quizzes</h4>
+            <p>Test your knowledge with AI-generated quizzes that provide instant feedback and detailed performance tracking.</p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{% static 'images/quizzes.svg' %}" alt="Interactive Quizzes" class="img-fluid" style="max-width: 80%;">
+        </div>
+    </div>
+</div>
+
+<!-- Learn Anywhere -->
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-4">
+            <i class="ri-global-line feature-icon"></i>
+            <h4 class="fw-bold">Learn Anywhere</h4>
+            <p>Access GenieLearn AI on any device and continue learning without interruption, anytime, anywhere.</p>
+        </div>
+        <div class="col-md-8 text-center">
+            <img src="{% static 'images/learn-anywhere.svg' %}" alt="Learn Anywhere" class="img-fluid" style="max-width: 90%;">
+        </div>
+    </div>
+</div>
+
+<!-- 24/7 Support -->
+<div class="container mt-5">
+    <div class="row align-items-center flex-md-row-reverse">
+        <div class="col-md-8 text-center">
+            <img src="{% static 'images/support.svg' %}" alt="24/7 Support" class="img-fluid" style="max-width: 90%;">
+        </div>
+        <div class="col-md-4">
+            <i class="ri-time-line feature-icon"></i>
+            <h4 class="fw-bold">24/7 Support</h4>
+            <p>Our AI assistants and expert mentors are available round the clock to support your learning journey.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Secure & Private -->
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <i class="ri-lock-password-line feature-icon"></i>
+            <h4 class="fw-bold">Secure & Private</h4>
+            <p>Your learning data is protected with top-tier encryption and privacy measures.</p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{% static 'images/security.svg' %}" alt="Security" class="img-fluid" style="max-width: 80%;">
+        </div>
+    </div>
+</div>
+
+<!-- Collaborative Learning -->
+<div class="container mt-5">
+    <div class="row align-items-center flex-md-row-reverse">
+        <div class="col-md-6">
+            <i class="ri-group-line feature-icon"></i>
+            <h4 class="fw-bold">Collaborative Learning</h4>
+            <p>Engage in interactive discussions with peers and mentors to enhance your understanding of key concepts.</p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="{% static 'images/collaboration.svg' %}" alt="Collaboration" class="img-fluid" style="max-width: 80%;">
+        </div>
+    </div>
+</div>
+
+<style>
+    .feature-icon {
+        font-size: 28px;
+        color: #007bff;
+        margin-right: 10px;
+    }
+
+    .feature-icon:hover {
+        color: #0056b3;
+        transform: scale(1.1);
+        transition: all 0.3s ease;
+    }
+
+
+    p {
+        font-size: 18px;
+        color: #555;
+    }
+
+    .img-fluid {
+        border-radius: 10px;
+    }
+</style>
+
+{% endblock %}

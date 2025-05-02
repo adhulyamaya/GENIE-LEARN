@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}GenieLearn AI - Support Center{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h2 class="fw-bold text-center"><i class="ri-customer-service-2-fill"></i> Need Help? We're Here for You</h2>
+    <p class="text-center">Our support team is available to assist you with any questions or concerns.</p>
+
+    <!-- Support Contact Options -->
+    <div class="text-center mt-4">
+        <p><i class="ri-mail-send-fill"></i> Email: 
+            <a href="mailto:support@genielearn.com" style="text-decoration: none; color: #00ffcc;">support@genielearn.com</a>
+        </p>
+        <p><i class="ri-phone-fill"></i> Call: 
+            <a href="tel:+1234567890" style="text-decoration: none; color: #00ffcc;">+1 234 567 890</a>
+        </p>
+        <p><i class="ri-chat-3-fill"></i> Live Chat: Available 24/7</p>
+    </div>
+
+    <!-- Support Form -->
+    <div class="d-flex justify-content-center">
+        <form class="w-50 p-4 shadow-sm rounded-lg" style="background-color: rgba(255, 255, 255, 0.1);">
+            <label class="fw-bold">Name</label>
+            <input type="text" class="form-control mb-3" placeholder="Enter your name" style="border-radius: 5px; padding: 12px; background-color: transparent; color: white;">
+
+            <label class="fw-bold">Email</label>
+            <input type="email" class="form-control mb-3" placeholder="Enter your email" style="border-radius: 5px; padding: 12px; background-color: transparent; color: white;">
+
+            <label class="fw-bold">Message</label>
+            <textarea class="form-control mb-3" rows="4" placeholder="Describe your issue" style="border-radius: 5px; padding: 12px; background-color: transparent; color: white;"></textarea>
+
+            <button class="btn btn-outline w-100">Submit</button>
+        </form>
+    </div>
+
+    <!-- Frequently Asked Questions (FAQ) -->
+    <section class="mt-5">
+        <h3 class="fw-bold text-center"><i class="ri-question-fill"></i> Frequently Asked Questions</h3>
+        <div class="accordion mt-3" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        <i class="ri-time-fill"></i> What are your support hours?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body" style="background-color: rgba(255, 255, 255, 0.4);">
+                        Our support team is available **24/7** via email and live chat.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        <i class="ri-user-star-fill"></i> How do I reset my password?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body" style="background-color: rgba(255, 255, 255, 0.4);">
+                        You can reset your password by clicking on the **Forgot Password?** link on the login page.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        <i class="ri-wallet-fill"></i> What payment methods do you accept?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body" style="background-color: rgba(255, 255, 255, 0.4);">
+                        We accept **credit/debit cards, PayPal, and bank transfers** for payments.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        <i class="ri-file-edit-fill"></i> How can I update my profile information?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body" style="background-color: rgba(255, 255, 255, 0.4);">
+                        You can update your profile information in the **Account Settings** section after logging in.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="background-color: rgba(255, 255, 255, 0.1);" data-bs-toggle="collapse" data-bs-target="#faq5">
+                        <i class="ri-refund-2-fill"></i> What is your refund policy?
+                    </button>
+                </h2>
+                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body" style="background-color: rgba(255, 255, 255, 0.4);">
+                        We offer a **full refund within 7 days** of purchase if you are not satisfied with our service.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</section>
+{% endblock %}

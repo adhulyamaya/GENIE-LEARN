@@ -77,6 +77,7 @@ def recommend_courses(request):
                 ranked_courses.append({
                     "course_id": course.id,
                     "course_title": course.title,
+                    "score":score,
                 })   
             ranked_courses.sort(key=lambda x: x['score'], reverse=True)
         

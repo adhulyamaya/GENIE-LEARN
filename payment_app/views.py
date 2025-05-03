@@ -22,7 +22,7 @@ def payment(request):
         return redirect('user_app:login')
     
     try:
-        user = Userinfo.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)
         
         # user's current active plan
         current_plan = None
@@ -42,7 +42,7 @@ def payment(request):
         
         return render(request, 'payment.html', context)
         
-    except Userinfo.DoesNotExist:
+    except User.DoesNotExist:
         return redirect('user_app:login')
 
 def subscribe(request, plan_key):
@@ -52,7 +52,7 @@ def subscribe(request, plan_key):
         return redirect('user_app:login')
     
     try:
-        user = Userinfo.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)
     except Userinfo.DoesNotExist:
         return redirect('user_app:login')
     

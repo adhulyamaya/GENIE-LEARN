@@ -3,16 +3,14 @@ import glob
 from django.conf import settings
 from django.shortcuts import render
 from .models import Course
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from .models import Course
 from user_app.models import User
-from .utils import call_grouq_api
 from django.http import JsonResponse
 from rest_framework.response import Response
 import logging
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+from .utils import   filter_courses, rank_course
 
 logger = logging.getLogger(__name__)
 
@@ -48,24 +46,6 @@ def courses(request):
 
     return render(request, "courses.html", {"courses": course_data})
 
-
-def build_course_recommendation_prompt(user_skills, courses):
-    prompt = f"User Skills: {', '.join(user_skills)}\n\nCourses:\n"
-    for course in courses:
-        course_skills = course.get_skills()
-        prompt += (
-            f"Course Title: {course.title}\n"
-            f"Skills: {', '.join(course_skills)}\n"
-            f"Description: {course.description[:100]}...\n\n"
-        )
-    prompt += (
-        "Based on the user's skills, recommend and rank the most suitable courses. "
-        "List them with short reasons."
-    )
-    print("[DEBUG] Generated Prompt:\n", prompt)
-    return prompt
-
-
 def recommend_courses(request):
     try:
         user_id = request.session.get("user_id")
@@ -75,24 +55,43 @@ def recommend_courses(request):
         if not user:
             return JsonResponse({"error": "User not found."}, status=404)
         user_skills = user.skills  
-        if isinstance(user_skills, str):
-            user_skills = [skill.strip().lower() for skill in user_skills.split(',')] 
-        logger.debug(f"[DEBUG] User Skills: {user_skills}")
+        user_skills = {
+            'skills': user.skills ,
+        }
+        print(f"Resume data extracted: {user_skills}")
 
         courses = Course.objects.filter(is_published=True)
-        logger.debug(f"[DEBUG] Fetched {courses.count()} published courses")
-        prompt = build_course_recommendation_prompt(user_skills, courses)
-        recommendation = call_grouq_api(prompt)
-        logger.debug("[DEBUG] GrouQ Response:", recommendation)
+        print(f"Total courses fetched: {len(courses)}")
 
-        return Response({
-            "recommendation_raw": recommendation
+        filtered_courses = filter_courses(user_skills, courses)
+        print(f"Filtered jobs count: {len(filtered_courses)}")
+        api_key = "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"
+
+        ranked_courses = []
+        
+        if filtered_courses:
+            for course in filtered_courses:
+                print(f"Ranking job: {course.title}")
+                score = rank_course(user_skills, course, api_key)
+                print(f"Score for job '{course.title}': {score}")
+                ranked_courses.append({
+                    "course_id": course.id,
+                    "course_title": course.title,
+                })   
+            ranked_courses.sort(key=lambda x: x['score'], reverse=True)
+        
+        print(f"Ranked courses sorted: {ranked_courses}")
+        return render(request, 'jobs/suggested_courses.html', {
+            'matched_jobs': ranked_courses,
         })
-
     except User.DoesNotExist:
-        logger.error(f"User with id {user_id} not found.")
-        return JsonResponse({"error": "User not found."}, status=404)
+        print("Error: User not found")
+        return JsonResponse({'error': 'User not found'}, status=404)
     
     except Exception as e:
-        logger.error(f"Error occurred while recommending courses: {str(e)}")
-        return JsonResponse({"error": "An error occurred while processing the request."}, status=500)
+        print(f"Error in rank_courses view: {e}")
+        messages.error(request, f"An error occurred: {str(e)}")
+        return render(request, 'candidate_home.html', {'error': str(e)})
+        # return JsonResponse({'error': 'User not found'}, status=404)
+    
+ 

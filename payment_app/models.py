@@ -43,7 +43,7 @@ class Payment(models.Model):
     plan = models.CharField(max_length=20, choices=PLAN_CHOICES, default=FREE)
 
     def __str__(self):
-        return f"{self.user.username} - ₹{self.amount} - {self.status} - {self.plan}"
+        return f"{self.user.email} - ₹{self.amount} - {self.status} - {self.plan}"
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

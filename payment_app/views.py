@@ -24,7 +24,6 @@ def payment(request):
     try:
         user = User.objects.get(id=user_id)
         
-        # user's current active plan
         current_plan = None
         current_payment = Payment.objects.filter(
             user=user, 
@@ -108,6 +107,84 @@ def subscribe(request, plan_key):
         payment.status = Payment.FAILED
         payment.save()
         return redirect('payment_app:error_page')
+
+
+# def subscribe(request, plan_key):
+#     """Initiate payment for selected plan"""
+#     user_id = request.session.get('user_id')
+#     if not user_id:
+#         return redirect('user_app:login')
+    
+#     try:
+#         user = User.objects.get(id=user_id)
+#     except User.DoesNotExist:
+#         return redirect('user_app:login')
+    
+#     plan = PLAN_DETAILS.get(plan_key)
+#     if not plan:
+#         messages.error(request, "Invalid plan selected")
+#         return redirect('payment_app:payment')
+    
+#     # Prevent duplicate purchase of same plan
+#     existing_payment = Payment.objects.filter(
+#         user=user,
+#         plan=plan_key,
+#         status=Payment.COMPLETED
+#     ).exists()
+
+#     if existing_payment:
+#         messages.warning(request, f"You have already subscribed to the {plan['name']} plan.")
+#         return redirect('payment_app:payment')
+
+#     # Proceed with payment
+#     merchant_txn_id = f"MTX{uuid.uuid4().hex[:12]}"
+    
+#     payment = Payment.objects.create(
+#         user=user,
+#         plan=plan_key,
+#         amount=plan["amount"] / 100,  # convert from paise to rupees
+#         transaction_id=merchant_txn_id,
+#         status=Payment.PENDING
+#     )
+    
+#     payload = {
+#         "merchantId": settings.PHONEPE_MERCHANT_ID,
+#         "merchantTransactionId": merchant_txn_id,
+#         "merchantUserId": f"MUID_{user_id}",
+#         "amount": plan["amount"],
+#         "redirectUrl": request.build_absolute_uri(reverse('payment_app:confirm')) + f"?merchantTransactionId={merchant_txn_id}",
+#         "redirectMode": "REDIRECT",
+#         "callbackUrl": request.build_absolute_uri(reverse('payment_app:confirm')) + f"?merchantTransactionId={merchant_txn_id}",
+#         "mobileNumber": user.phone_number if hasattr(user, 'phone_number') and user.phone_number else "9999999999",
+#         "paymentInstrument": {
+#             "type": "PAY_PAGE"
+#         }
+#     }
+    
+#     try:
+#         response = phonepe_post("/pg/v1/pay", payload)
+#         print("PhonePe Response:", response)
+        
+#         if response.get("success"):
+#             data = response["data"]["instrumentResponse"]
+#             redirect_url = data.get("intentUrl") or data["redirectInfo"]["url"]
+#             return redirect(redirect_url)
+#         else:
+#             messages.error(request, f"Payment initiation failed: {response.get('message', 'Unknown error')}")
+#             payment.status = Payment.FAILED
+#             payment.save()
+#             return redirect('payment_app:error_page')
+    
+#     except Exception as e:
+#         print(f"Error initiating payment: {str(e)}")
+#         messages.error(request, f"Error initiating payment: {str(e)}")
+#         payment.status = Payment.FAILED
+#         payment.save()
+#         return redirect('payment_app:error_page')
+
+
+
+
 
 def confirm(request):
     """Handle redirect from PhonePe after payment"""

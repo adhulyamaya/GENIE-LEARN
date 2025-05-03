@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}GenieLearn AI - AI Suggested Courses{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="text-center text-light mb-4 fw-bold">AI Recommended Courses Just for You</h2>
+
+  <div class="row g-4">
+    {% for course in recommended_courses %}
+      <div class="col-md-6 col-lg-4">
+        <div class="course-card" style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; padding: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="font-size: 20px; font-weight: bold; margin: 0; color: #fff;">{{ course.course_title }}</h3>
+            <span style="font-size: 12px; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background-color: #00ffcc; color: #000;">
+              Intermediate
+            </span>
+          </div>
+
+          <p style="font-size: 13px; color: #ccc; margin: 0 0 12px;"><i class="ri-price-tag-3-line"></i> General</p>
+          <p style="font-size: 14px; color: #bbb; margin-bottom: 15px;">{{ course.description }}</p>
+          <p style="font-size: 12px; color: #888; margin: 0 0 8px;"><i class="ri-lightbulb-line"></i> Skills: N/A</p>
+          <p style="font-size: 12px; color: #888; margin: 0 0 15px;"><i class="ri-user-line"></i> Author: GenieLearn AI</p>
+
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% url 'courses_app:courses' %}" style="padding: 8px 16px; font-size: 14px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none;" 
+               onmouseover="this.style.background='#00ffcc'; this.style.color='#000';" 
+               onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
+              <i class="ri-eye-line"></i> View
+            </a>
+            <span style="font-size: 12px; color: #bbb;">Score: {{ course.score }}</span>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p style="text-align: center; color: #fff; font-size: 18px;">No courses available at the moment.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

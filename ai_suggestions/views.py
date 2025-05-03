@@ -10,11 +10,6 @@ def rank_skills(request):
     if not user_id:
         messages.error(request, "You must be logged in to access this page.")
         return redirect("user:login")
-    
-
-
-
-    
     return render(request, 'rank_skills.html')
 
 

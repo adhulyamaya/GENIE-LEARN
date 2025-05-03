@@ -43,10 +43,10 @@
                     <span class="badge bg-success p-5">Current Plan</span>
                 {% else %}
                     <a href="{% url 'payment_app:subscribe' 'pro' %}" class="btn btn-success">
-                        {% if current_plan %}Downgrade{% else %}Select{% endif %}
+                        {% if current_plan %}Downgrade{% else %}Subscribe{% endif %}
                     </a>
                 {% endif %}
-                <button class="btn btn-warning">Subscribe Now</button>
+                {% comment %} <button class="btn btn-warning">Subscribe Now</button> {% endcomment %}
             </div>
         </div>
 
@@ -66,10 +66,10 @@
                     <span class="badge bg-success p-5">Current Plan</span>
                 {% else %}
                     <a href="{% url 'payment_app:subscribe' 'pro' %}" class="btn btn-success">
-                        {% if current_plan %}Downgrade{% else %}Select{% endif %}
+                        {% if current_plan %}Downgrade{% else %}Subscribe{% endif %}
                     </a>
                 {% endif %}
-                <button class="btn btn-success">Upgrade Now</button>
+                {% comment %} <button class="btn btn-success">Upgrade Now</button> {% endcomment %}
             </div>
         </div>
     </div>

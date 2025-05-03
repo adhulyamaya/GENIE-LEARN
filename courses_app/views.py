@@ -58,7 +58,7 @@ def courses(request):
 #         user_skills = {
 #             'skills': user.skills ,
 #         }
-#         print(f"Resume data extracted: {user_skills}")
+
 
 #         courses = Course.objects.filter(is_published=True)
 #         print(f"Total courses fetched: {len(courses)}")
@@ -108,7 +108,6 @@ def courses(request):
 #         user_skills = {
 #             'skills': profile.skills,
 #         }
-#         print(f"Resume data extracted: {user_skills}")
 
 #         courses = Course.objects.filter(is_published=True)
 #         print(f"Total courses fetched: {len(courses)}")
@@ -146,7 +145,6 @@ def courses(request):
 #         messages.error(request, f"An error occurred: {str(e)}")
 #         return render(request, 'candidate_home.html', {'error': str(e)})
 
-from django.http import JsonResponse
 
 def recommend_courses(request):
     try:
@@ -155,11 +153,13 @@ def recommend_courses(request):
 
         user = request.user
         profile = User.objects.get(email=user.email)
+        print(f"User profile: {profile}")
 
         user_skills = {
             'skills': profile.skills,
         }
-        print(f"Course data extracted: {user_skills}")
+        print(user_skills,".................................................................")
+        print(f" data extracted: {user_skills}")
 
         courses = Course.objects.filter(is_published=True)
         print(f"Total courses fetched: {len(courses)}")

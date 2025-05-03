@@ -10,13 +10,19 @@ from django.http import JsonResponse
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import IntegrityError
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import redirect
+
 
 User = get_user_model()
 
@@ -67,37 +73,6 @@ def register_view(request):
     return render(request, 'register.html')
 
 
-
-
-
-# def login_view(request):
-#     if request.method == 'POST':
-#         form = AuthenticationForm(data=request.POST)
-#         if form.is_valid():
-#             user = form.get_user()
-#             login(request, user)
-#             messages.success(request, "Login successful!")
-#             return redirect('users:user_profile')  
-#         else:
-#             messages.error(request, "Invalid username or password")
-#     else:
-#         form = AuthenticationForm()
-
-#     return render(request, 'users/login.html', {'form': form})
-
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib import messages
-
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from django.http import JsonResponse
-from django.shortcuts import redirect
-
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -111,29 +86,10 @@ def login_view(request):
             login(request, user)
             messages.success(request, f"Welcome, {user.full_name}!")
             return redirect('landing') 
-
-            # return JsonResponse({
-            #     'status': 'success',
-            #     'message': f"Welcome, {user.full_name}!",
-            #     'redirect_url': '/home'
-            # })
         else:
             messages.error(request, "Invalid credentials.")
             return redirect('index') 
-            # return JsonResponse({
-            #     'status': 'error',
-            #     'message': "Invalid email or password."
-            # })
-
-    # return JsonResponse({
-    #     'status': 'error',
-    #     'message': 'POST request expected for login.'
-    # })
     return redirect('index')
-
-
-
-
 
 
 # Logout view
@@ -143,15 +99,16 @@ def logout_view(request):
     return redirect('index') 
 
 
-@login_required
 def user_profile(request):
-    profile, created = User.objects.get_or_create(user=request.user)
-    
+    user = request.user
+    profile = User.objects.get(email=user.email)  
     context = {
         'profile': profile,
         'user': request.user,
     }
-    return render(request, 'user_profile.html', context)
+    return render(request, 'profile.html', context)
+
+
 
 
 def subscriptions(request):

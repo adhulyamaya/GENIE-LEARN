@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}GenieLearn AI - My Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">My Profile</h2>
+
+    <!-- Profile Cards Grid -->
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+
+        <!-- Bio Card -->
+        {% comment %} <div class="col">
+            <div class="card shadow-sm border-light rounded" style="background-color: #00FFCC;">
+                <div class="card-body text-dark">
+                    <h5 class="card-title  text-dark"><i class="ri-pencil-line"></i> Bio</h5>
+                    <p class="card-text">{{ profile.bio }}</p>
+                </div>
+            </div>
+        </div> {% endcomment %}
+
+        <!-- Contact Information Card -->
+        <div class="col">
+            <div class="card shadow-sm border-light rounded" style="background-color: #00FFCC;">
+                <div class="card-body">
+                    <h5 class="card-title  text-dark"><i class="ri-mail-fill"></i> Contact Information</h5>
+                    <ul class="list-unstyled text-dark">
+                        <li><i class="ri-mail-fill"></i> <strong>Email:</strong> {{ profile.email }}</li>
+                        <li><i class="ri-phone-fill"></i> <strong>Phone:</strong> {{ profile.phone }}</li>
+                        <li><i class="ri-calendar-fill"></i> <strong>Date of Birth:</strong> {{ profile.date_of_birth }}</li>
+                    </ul>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Education & Certifications Card -->
+        <div class="col">
+            <div class="card shadow-sm border-light rounded" style="background-color: #00FFCC;">
+                <div class="card-body">
+                    <h5 class="card-title  text-dark"><i class="ri-graduation-cap-line"></i> Education & Certifications</h5>
+                    <ul class="list-unstyled  text-dark">
+                        <li><i class="ri-graduation-cap-line"></i> <strong>Education:</strong> {{ profile.educational_qualification }}</li>
+                        <li><i class="ri-certificate-line"></i> <strong>Certificates:</strong> {{ profile.certificates }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address & Website Card -->
+        {% comment %} <div class="col">
+            <div class="card shadow-sm border-light rounded" style="background-color: #00FFCC;">
+                <div class="card-body">
+                    <h5 class="card-title  text-dark"><i class="ri-map-pin-line"></i> Address & Website</h5>
+                    <ul class="list-unstyled text-dark">
+                        <li><i class="ri-map-pin-line"></i> <strong>Address:</strong> {{ profile.address }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div> {% endcomment %}
+
+        <!-- Skills Card -->
+        <div class="col">
+            <div class="card shadow-sm border-light rounded" style="background-color: #00FFCC;">
+                <div class="card-body  text-dark">
+                    <h5 class="card-title  text-dark"><i class="ri-user-star-line"></i> Skills</h5>
+                    <p class="card-text">{{ profile.skills }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Socials & Followers Card -->
+        <div class="col">
+            <div class="card shadow-sm border-light rounded" style="background-color: #00FFCC;">
+                <div class="card-body">
+                    <h5 class="card-title  text-dark"><i class="ri-user-follow-fill"></i> Socials & Followers</h5>
+                    <ul class="list-unstyled  text-dark">
+                        <li><i class="ri-user-follow-line"></i> <strong>Followers:</strong> {{ profile.followers_count }}</li>
+                        <li><i class="ri-user-follow-fill"></i> <strong>Following:</strong> {{ profile.following_count }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Enrolled Courses Button -->
+    <div class="text-end mt-4">
+        <a href="#" class="btn btn-primary">Enrolled Courses</a>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: #00FFCC !important;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: black; 
+    }
+
+    .list-unstyled li {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    . text-dark {
+        color: black; 
+    }
+
+    .card-body i {
+        color: black; 
+    }
+
+</style>
+{% endblock %}

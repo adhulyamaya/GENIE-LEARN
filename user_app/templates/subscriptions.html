@@ -10,7 +10,13 @@
     </h2>
     <p class="text-  text-center">Find the perfect plan tailored to your learning journey.</p>
 
+
+
+
     <div class="row justify-content-center mt-4">
+
+        <!-- Basic Plan -->
+
         <div class="col-md-4">
             <div class="p-4 text-center shadow-lg rounded text-dark" style="background: #f8f9fa;">
                 <h4 class="fw-bold">Free Plan</h4>
@@ -22,6 +28,7 @@
                     <li><i class="ri-time-line text-warning"></i> Limited AI assistance</li>
                     <li><i class="ri-group-line text-secondary"></i> Community access</li>
                 </ul>
+                <h5 class="fw-bold text-primary">Free</h5>
                 <button class="btn btn-outline-primary">Get Started</button>
             </div>
         </div>
@@ -37,6 +44,14 @@
                     <li><i class="ri-check-line text-success"></i> Priority support</li>
                     <li><i class="ri-check-line text-success"></i> Certificate of completion</li>
                 </ul>
+                <h5 class="fw-bold text-primary">₹499</h5>
+                {% if current_plan == 'pro' %}
+                    <span class="badge bg-success p-5">Current Plan</span>
+                {% else %}
+                    <a href="{% url 'payment_app:subscribe' 'basic' %}" class="btn btn-success">
+                        {% if current_plan %}Downgrade{% else %}Select{% endif %}
+                    </a>
+                {% endif %}
                 <button class="btn btn-warning">Subscribe Now</button>
             </div>
         </div>
@@ -52,6 +67,14 @@
                     <li><i class="ri-check-line text-success"></i> Live Q&A sessions</li>
                     <li><i class="ri-check-line text-success"></i> Career guidance & internships</li>
                 </ul>
+                <h5 class="fw-bold text-primary">₹999</h5>
+                {% if current_plan == 'premium' %}
+                    <span class="badge bg-success p-5">Current Plan</span>
+                {% else %}
+                    <a href="{% url 'payment_app:subscribe' 'basic' %}" class="btn btn-success">
+                        {% if current_plan %}Downgrade{% else %}Select{% endif %}
+                    </a>
+                {% endif %}
                 <button class="btn btn-success">Upgrade Now</button>
             </div>
         </div>

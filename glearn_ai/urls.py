@@ -8,5 +8,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='index'), 
     path('home/', TemplateView.as_view(template_name='landing.html'), name='landing'),
     path('user_app/', include('user_app.urls')),
+    path('courses_app/', include('courses_app.urls')),
+    path('payment_app/', include('payment_app.urls')),
+    path('score_board/', include('scoreboard.urls')),
 
 ]

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'learning_resources',
     'scoreboard',
     'ai_suggestions',
+    'payment_app',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+PHONEPE_MERCHANT_ID = "PGTESTPAYUAT86"
+PHONEPE_SALT_KEY = "96434309-7796-489d-8924-ab56988a6076"
+PHONEPE_SALT_INDEX = "1"
+PHONEPE_ENV = "SANDBOX"
+PHONEPE_BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox"

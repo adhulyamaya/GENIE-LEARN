@@ -12,6 +12,11 @@ class Course(models.Model):
         ('advanced', 'Advanced'),
     ]
 
+    SUBSCRIPTION_CHOICES = [
+    ('FREE', 'Free'),
+    ('PRO', 'Pro'),
+    ('PREMIUM', 'Premium'),
+]
     title = models.CharField(max_length=255)
     description = models.TextField()
     skills = models.TextField(null=True, blank=True)  # Comma-separated skills
@@ -22,6 +27,7 @@ class Course(models.Model):
     tags = models.CharField(max_length=255, null=True, blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     is_published = models.BooleanField(default=False)
+    subscription = models.CharField(max_length=20, choices=SUBSCRIPTION_CHOICES, default='FREE')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

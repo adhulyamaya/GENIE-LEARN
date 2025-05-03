@@ -11,15 +11,20 @@
     <div class="row gx-0 align-items-center" style="height: 700px;">
         <!-- Left Banner Image -->
         <div class="col-md-6 d-flex align-items-center justify-content-center">
-            <img src="{% static 'images/banner_left.png' %}" class="img-fluid w-100" style="max-height: 100%; object-fit: contain;" alt="Left Banner">
+            <div style="width: 100%; max-width: 600px; height: 600px;">
+                <img src="{% static 'images/banner_left.png' %}" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Left Banner">
+            </div>
         </div>
 
         <!-- Right Banner Image -->
         <div class="col-md-6 d-flex align-items-center justify-content-center">
-            <img src="{% static 'images/banner_right.png' %}" class="img-fluid w-100" alt="Right Banner">
+            <div style="width: 100%; max-width: 600px; height: 600px;">
+                <img src="{% static 'images/banner_right.png' %}" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Right Banner">
+            </div>
         </div>
     </div>
 </section>
+
 
 
 

@@ -1,9 +1,10 @@
 from django.db import models
+from user_app.models import User
 
 # Create your models here.
 class Payment(models.Model):
 
-    user = models.ForeignKey('Userinfo', on_delete=models.CASCADE, related_name='payments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, default='pending')
     method = models.CharField(max_length=20,  default='card')

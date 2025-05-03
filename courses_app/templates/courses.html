@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}GenieLearn AI - Courses{% endblock %}
+
+{% block content %}
+<div style="padding: 40px; background-color: #111; min-height: 100vh; color: #fff; font-family: sans-serif;">
+  <h2 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 40px; color: #00ffcc;">
+    <i class="ri-book-open-line" style="vertical-align: middle;"></i> Courses
+  </h2>
+
+   <!-- Back to Dashboard Button -->
+   <div style="text-align: center; margin-bottom: 20px;">
+    <a href="{% url 'landing' %}" style="padding: 10px 20px; font-size: 14px; background-color: #00ffcc; color: #000; text-decoration: none; border-radius: 6px; border: 1px solid #00ffcc;">
+      <i class="ri-arrow-left-line"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Course Container -->
+  <div id="course-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+    {% for course in courses %}
+    <div class="course-card" style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; padding: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="font-size: 20px; font-weight: bold; margin: 0; color: #fff;">{{ course.title }}</h3>
+        <span style="font-size: 12px; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background-color: #00ffcc; color: #000;">
+          {{ course.difficulty }}
+        </span>
+      </div>
+      <p style="font-size: 13px; color: #ccc; margin: 0 0 12px;"><i class="ri-price-tag-3-line"></i> {{ course.category }}</p>
+      
+      <!-- Full Description -->
+      <p style="font-size: 14px; color: #bbb; margin-bottom: 15px;">{{ course.description }}</p>
+      
+      <p style="font-size: 12px; color: #888; margin: 0 0 8px;"><i class="ri-lightbulb-line"></i> Skills: {{ course.skills }}</p>
+      <p style="font-size: 12px; color: #888; margin: 0 0 15px;"><i class="ri-user-line"></i> Author: {{ course.author }}</p>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="{% url 'courses_app:courses' %}" style="padding: 8px 16px; font-size: 14px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none;" onmouseover="this.style.background='#00ffcc'; this.style.color='#000';" onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
+          <i class="ri-eye-line"></i> View
+        </a>
+      </div>
+    </div>
+    {% empty %}
+    <p style="text-align: center; color: #fff; font-size: 18px;">No courses available at the moment.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination Buttons -->
+  <div id="pagination" style="text-align: center; margin-top: 40px;"></div>
+</div>
+
+<!-- Pagination Script -->
+<script>
+  const coursesPerPage = 9;
+  const courseCards = document.querySelectorAll('.course-card');
+  const totalCourses = courseCards.length;
+  const totalPages = Math.ceil(totalCourses / coursesPerPage);
+  const paginationContainer = document.getElementById('pagination');
+
+  function showPage(page) {
+    courseCards.forEach((card, index) => {
+      card.style.display = (index >= (page - 1) * coursesPerPage && index < page * coursesPerPage) ? 'flex' : 'none';
+    });
+    updatePaginationButtons(page);
+  }
+
+  function updatePaginationButtons(currentPage) {
+    paginationContainer.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.innerText = i;
+      btn.style.margin = '0 5px';
+      btn.style.padding = '8px 12px';
+      btn.style.border = '1px solid #00ffcc';
+      btn.style.borderRadius = '6px';
+      btn.style.backgroundColor = i === currentPage ? '#00ffcc' : 'transparent';
+      btn.style.color = i === currentPage ? '#000' : '#00ffcc';
+      btn.style.cursor = 'pointer';
+      btn.onclick = () => showPage(i);
+      paginationContainer.appendChild(btn);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    showPage(1);
+  });
+</script>
+{% endblock %}

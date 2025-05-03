@@ -1,312 +1,178 @@
-from django.shortcuts import render
-
-# Create your views here.
-import random
-from django.shortcuts import render, redirect
+import uuid
+from django.urls import reverse
 from django.contrib import messages
-from user_app.models import Userinfo, Payment
-import razorpay
-from django.contrib.auth.decorators import login_required
-import requests
-from django.utils import timezone
+from django.shortcuts import render, redirect, get_object_or_404
+from glearn_ai import settings
 
-import json
-import hashlib
-import hmac
-from django.conf import settings
+from user_app.models import User
+from payment_app.models import Payment
+from .utils import phonepe_post, check_payment_status
 
-PHONEPE_BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1"
-CLIENT_ID = "TEST-M220SEDYJDCQ6_25042"
-CLIENT_SECRET = "MWUyYzQ0MWYtNWFmMi00ZmEwLThhMTctMzFjNzhkODk4NmU3"
-CLIENT_VERSION = 1
-
-# Initialize Razorpay client
-razorpay_client = razorpay.Client(auth=("RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"))
+PLAN_DETAILS = {
+    "basic": {"amount": 49900, "label": "Basic – ₹499"},
+    "pro": {"amount": 99900, "label": "Pro – ₹999"},
+    "premium": {"amount": 149900, "label": "Premium – ₹1499"},
+}
 
 
 def payment(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect('user_app:login')
-    try:
-        user = Userinfo.objects.get(id=user_id)
-    except Userinfo.DoesNotExist:
-        return redirect('user_app:login')
-    if request.method == 'POST':
-        plan = request.POST.get('plan')
-        method = request.POST.get('payment_method')
-        request.session['plan'] = plan  # Save plan in session
-        if method == 'upi':
-            return redirect('payment_app:upi_payment')
-        elif method in ['debit', 'credit']:
-            return redirect('payment_app:card_payment')
-        else:
-            return redirect('payment')
-    return render(request, 'payment.html', {'first_name': user.first_name})
-
-
-
-def upi_payment(request):
+    """Display payment plans page"""
     user_id = request.session.get('user_id')
     if not user_id:
         return redirect('user_app:login')
     
-    if request.method == 'POST':
-        upi_id = request.POST.get('upi_id')
-        # amount = float(request.POST.get('amount'))  # Amount in INR
-        amount = 100.00
-        
-        CLIENT_ID = 'TEST-M220SEDYJDCQ6_25042'
-        client_secret = 'MWUyYzQ0MWYtNWFmMi00ZmEwLThhMTctMzFjNzhkODk4NmU3'
-        print('AAAAA')
-        api_url = 'https://sandbox.phonepe.com/v1/payment/upi' 
-        print('BBBB')
-
-        payment_data = {
-                    "merchantId": CLIENT_ID,
-                    "merchantTransactionId": merchant_transaction_id,
-                    "amount": int(amount * 100),  # Convert to paise
-                    "merchantUserId": str(user_id),
-                    "callbackUrl": "http://localhost:8000/payment/callback/",
-                    "paymentInstrument": {
-                        "type": "UPI_INTENT",
-                        "target": upi_id,
-                    }
-                }
-        print('CCCC')
-
-        response_data = create_payment(payment_data)
-
-        if response_data.get('success') == True:
-            # Check payment status after initiation
-            status_data = check_payment_status(merchant_transaction_id)
-
-            if status_data.get('data', {}).get('state') == 'COMPLETED':
-                Payment.objects.create(
-                    user_id=user_id,
-                    amount=amount,
-                    status='success',
-                    method='UPI',
-                    transaction_id=merchant_transaction_id,
-                    order_id=status_data['data'].get('merchantOrderId'),
-                    payment_date=timezone.now()
-                )
-                messages.success(request, 'Payment successful!')
-                return render(request, 'success.html', {
-                    'method': 'UPI',
-                    'upi_id': upi_id,
-                    'payment_status': 'Success',
-                    'message': 'Your payment was successful!'
-                })
-            else:
-                messages.error(request, 'Payment pending or failed!')
-                return render(request, 'success.html', {
-                    'method': 'UPI',
-                    'upi_id': upi_id,
-                    'payment_status': 'Failure',
-                    'message': 'Payment failed or still processing. Please try again.'
-                })
-        else:
-            messages.error(request, 'Payment initiation failed!')
-            return render(request, 'success.html', {
-                'method': 'UPI',
-                'upi_id': upi_id,
-                'payment_status': 'Failure',
-                'message': 'Unable to initiate payment.'
-            })
-
-    # Handle GET request (render the UPI payment form)
-    return render(request, 'upi_payment.html')
-
-
-
-# Utility: generate Authorization Signature
-def generate_signature(payload: str, client_secret: str) -> str:
-    key_bytes = client_secret.encode('utf-8')
-    data_bytes = payload.encode('utf-8')
-    signature = hmac.new(key_bytes, data_bytes, hashlib.sha256).hexdigest()
-    return signature
-
-# 1. Create Payment
-def create_payment(payment_data):
-    url = f"{PHONEPE_BASE_URL}/pay"
-    payload = json.dumps(payment_data)
-    signature = generate_signature(payload, CLIENT_SECRET)
-
-    headers = {
-        "Content-Type": "application/json",
-        "X-CLIENT-ID": CLIENT_ID,
-        "X-CLIENT-VERSION": CLIENT_VERSION,
-        "X-CLIENT-SIGNATURE": signature,
-    }
-
-    response = requests.post(url, headers=headers, data=payload)
-    return response.json()
-
-# 2. Check Status
-def check_payment_status(merchant_transaction_id):
-    url = f"{PHONEPE_BASE_URL}/status/{merchant_transaction_id}"
-    headers = {
-        "X-CLIENT-ID": CLIENT_ID,
-        "X-CLIENT-VERSION": CLIENT_VERSION,
-    }
-    response = requests.get(url, headers=headers)
-    return response.json()
-
-# Main View
-def upi_payment_view(request):
-    if request.method == 'POST':
-        user_id = request.user.id
-        amount = request.POST.get('amount')
-        upi_id = request.POST.get('upi_id')
-
-        payment_data = {
-            "merchantId": CLIENT_ID,
-            "merchantTransactionId": f"txn_{timezone.now().timestamp()}",
-            "amount": int(float(amount) * 100),
-            "merchantUserId": str(user_id),
-            "callbackUrl": "http://localhost:8000/payment/callback/",
-            "paymentInstrument":{
-                "type": "UPI_INTENT",
-                "target": upi_id,
-            }
-        }
-
-        try:
-            print('Initiating payment...')
-            response_data = create_payment(payment_data)
-            print(response_data)
-
-            if response_data.get('success') == True:
-                merchant_transaction_id = payment_data['merchantTransactionId']
-                status_data = check_payment_status(merchant_transaction_id)
-                print(status_data)
-
-                if status_data.get('data', {}).get('state') == 'COMPLETED':
-                    Payment.objects.create(
-                        user_id=user_id,
-                        amount=amount,
-                        status='success',
-                        method='UPI',
-                        transaction_id=merchant_transaction_id,
-                        order_id=status_data['data'].get('merchantOrderId'),
-                        payment_date=timezone.now()
-                    )
-                    messages.success(request, 'Payment successful!')
-                    return render(request, 'success.html', {
-                        'method': 'UPI',
-                        'upi_id': upi_id,
-                        'payment_status': 'Success',
-                        'message': 'Your payment was successful!'
-                    })
-                else:
-                    messages.error(request, 'Payment pending or failed!')
-                    return render(request, 'success.html', {
-                        'method': 'UPI',
-                        'upi_id': upi_id,
-                        'payment_status': 'Failure',
-                        'message': 'Payment failed or still processing. Please try again.'
-                    })
-
-            else:
-                messages.error(request, 'Payment initiation failed!')
-                return render(request, 'success.html', {
-                    'method': 'UPI',
-                    'upi_id': upi_id,
-                    'payment_status': 'Failure',
-                    'message': 'Unable to initiate payment.'
-                })
-
-        except requests.exceptions.RequestException as e:
-            print('Request Exception:', e)
-            messages.error(request, f'Error while processing payment: {e}')
-            return redirect('payment_app:error_page')
-
-    else:
-        return render(request, 'payment_form.html')
-
-
-def card_payment(request):
-    user = request.user
-
-    if request.method == 'POST':
-        # Get payment details from the form
-        amount_rupees = request.POST.get('amount')
-        card_number = request.POST.get('card_number')
-        expiry_date = request.POST.get('expiry_date')
-        cvv = request.POST.get('cvv')
-
-        if not amount_rupees or not amount_rupees.replace('.', '', 1).isdigit():
-            return render(request, 'card_payment.html', {'error': 'Enter a valid amount'})
-        
-        amount_paise = int(float(amount_rupees) * 100)
-        currency = "INR"
-
-        try:
-            # Create Razorpay order
-            payment_order = razorpay_client.order.create({
-                "amount": amount_paise,
-                "currency": currency,
-                "payment_capture": 1
-            })
-            print('ADDDDDD')
-        except Exception as e:
-            return render(request, 'card_payment.html', {'error': f'Payment creation failed: {str(e)}'})
-
-        payment_order_id = payment_order['id']
-
-        # Store the payment in the Payment model
-        payment = Payment(
-            user=user,
-            amount=amount_rupees,
-            status=Payment.PENDING,
-            method=Payment.CARD,
-            transaction_id=None,  # Update later after payment confirmation
-            order_id=payment_order_id
-        )
-        payment.save()
-
-        context = {
-            'razorpay_key_id': "RAZORPAY_KEY_ID",  # Replace with your Razorpay Key ID
-            'amount': amount_paise,
-            'display_amount': amount_rupees,
-            'currency': currency,
-            'order_id': payment_order_id,
-        }
-
-        return render(request, 'razorpay_checkout.html', context)
-
-    return render(request, 'card_payment.html')
-
-
-def payment_success(request):
-    order_id = request.GET.get('order_id')
-    payment_id = request.GET.get('payment_id')
-    signature = request.GET.get('signature')
-
-    # Verify payment signature (this should be done by Razorpay's API)
     try:
-        razorpay_client.payment.verify_payment_signature({
-            'razorpay_order_id': order_id,
-            'razorpay_payment_id': payment_id,
-            'razorpay_signature': signature
-        })
+        user = Userinfo.objects.get(id=user_id)
+        
+        # user's current active plan
+        current_plan = None
+        current_payment = Payment.objects.filter(
+            user=user, 
+            status=Payment.COMPLETED
+        ).order_by('-payment_date').first()
+        
+        if current_payment:
+            current_plan = current_payment.plan
+        
+        context = {
+            'first_name': user.first_name,
+            'current_plan': current_plan,
+            'plan_details': PLAN_DETAILS
+        }
+        
+        return render(request, 'payment.html', context)
+        
+    except Userinfo.DoesNotExist:
+        return redirect('user_app:login')
 
-        # Update payment status
-        payment = Payment.objects.get(order_id=order_id)
-        payment.status = Payment.COMPLETED
-        payment.transaction_id = payment_id
-        payment.save()
+def subscribe(request, plan_key):
+    """Initiate payment for selected plan"""
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('user_app:login')
+    
+    try:
+        user = Userinfo.objects.get(id=user_id)
+    except Userinfo.DoesNotExist:
+        return redirect('user_app:login')
+    
+    plan = PLAN_DETAILS.get(plan_key)
+    if not plan:
+        messages.error(request, "Invalid plan selected")
+        return redirect('payment_app:payment')
+    
+    merchant_txn_id = f"MTX{uuid.uuid4().hex[:12]}"
+    
+    payment = Payment.objects.create(
+        user=user,
+        plan=plan_key,
+        amount=plan["amount"] / 100,  # convert from paise to rupees
+        transaction_id=merchant_txn_id,
+        status=Payment.PENDING
+    )
+    
+    # payment payload
+    payload = {
+        "merchantId": settings.PHONEPE_MERCHANT_ID,
+        "merchantTransactionId": merchant_txn_id,
+        "merchantUserId": f"MUID_{user_id}",
+        "amount": plan["amount"],
+        "redirectUrl": request.build_absolute_uri(reverse('payment_app:confirm')) + f"?merchantTransactionId={merchant_txn_id}",
+        "redirectMode": "REDIRECT",
+        "callbackUrl": request.build_absolute_uri(reverse('payment_app:confirm')) + f"?merchantTransactionId={merchant_txn_id}",
+        "mobileNumber": user.phone_number if hasattr(user, 'phone_number') and user.phone_number else "9999999999",
+        "paymentInstrument": {
+            "type": "PAY_PAGE"
+        }
+    }
+    
+    try:
+        # initiate payment
+        response = phonepe_post("/pg/v1/pay", payload)
 
-        return render(request, 'success.html', {'message': 'Payment successful', 'payment': payment})
-
+        print("PhonePe Response:", response)
+        
+        if response.get("success"):
+            data = response["data"]["instrumentResponse"]
+            redirect_url = data.get("intentUrl") or data["redirectInfo"]["url"]
+            return redirect(redirect_url)
+        else:
+            messages.error(request, f"Payment initiation failed: {response.get('message', 'Unknown error')}")
+            payment.status = Payment.FAILED
+            payment.save()
+            return redirect('payment_app:error_page')
+    
     except Exception as e:
-        return render(request, 'failure.html', {'error': f'Payment verification failed: {str(e)}'})
+        print(f"Error initiating payment: {str(e)}")
+        messages.error(request, f"Error initiating payment: {str(e)}")
+        payment.status = Payment.FAILED
+        payment.save()
+        return redirect('payment_app:error_page')
 
-
-# views.py
-def error_page(request):
-    return render(request, 'error.html')
+def confirm(request):
+    """Handle redirect from PhonePe after payment"""
+    merchant_txn_id = request.GET.get("merchantTransactionId")
+    
+    if not merchant_txn_id:
+        messages.error(request, "Missing transaction information")
+        return redirect('payment_app:error_page')
+    
+    payment = get_object_or_404(Payment, transaction_id=merchant_txn_id)
+    
+    try:
+        # payment status
+        status_response = check_payment_status(merchant_txn_id)
+        
+        if status_response.get("success"):
+            status = status_response["data"]["state"]
+            txn_id = status_response["data"].get("transactionId")
+            
+            if status == "COMPLETED":
+                payment.status = Payment.COMPLETED
+                payment.order_id = txn_id
+                messages.success(request, "Payment successful! Your subscription is now active.")
+            else:
+                payment.status = Payment.FAILED
+                messages.error(request, f"Payment failed with status: {status}")
+            
+            payment.save()
+            
+            if status == "COMPLETED":
+                return redirect('payment_app:success')
+            else:
+                return redirect('payment_app:error_page')
+        
+        else:
+            messages.error(request, f"Error checking payment status: {status_response.get('message', 'Unknown error')}")
+            return redirect('payment_app:error_page')
+    
+    except Exception as e:
+        print(f"Error checking payment status: {str(e)}")
+        messages.error(request, f"Error processing payment confirmation: {str(e)}")
+        return redirect('payment_app:error_page')
 
 def success(request):
-    return render(request, 'success.html')
+    """Display success page after payment"""
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('user_app:login')
+    
+    try:
+        user = Userinfo.objects.get(id=user_id)
+        payment = Payment.objects.filter(user=user, status=Payment.COMPLETED).order_by('-payment_date').first()
+        
+        context = {
+            'user': user,
+            'payment': payment,
+            'payment_status': 'Success',
+            'message': 'Your payment was successful!'
+        }
+        
+        return render(request, 'success.html', context)
+        
+    except Userinfo.DoesNotExist:
+        return redirect('user_app:login')
+
+def error_page(request):
+    """Display error page"""
+    return render(request, 'error.html', {'message': 'There was an error processing your payment.'})

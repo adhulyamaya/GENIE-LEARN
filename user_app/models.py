@@ -24,6 +24,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=20, unique=True, null=True, blank=True)
     is_email_verified = models.BooleanField(default=False)
     is_phone_verified = models.BooleanField(default=False)
+    
     subscriptions_type = models.CharField(max_length=20, null=True, blank=True)
     registration_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_login = models.DateTimeField(auto_now=True, null=True, blank=True)

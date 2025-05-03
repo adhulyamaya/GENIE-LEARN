@@ -2,10 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('payment', views.payment, name='payment'),
-    path('upi_payment/', views.upi_payment, name='upi_payment'),
-    path('card_payment/', views.card_payment, name='card_payment'),
-    path('error/', views.error_page, name='error_page'),
+    path('', views.payment, name='payment'),
+    path('subscribe/<str:plan_key>/', views.subscribe, name='subscribe'),
+    path('confirm/', views.confirm, name='confirm'),
     path('success/', views.success, name='success'),
-
+    path('error/', views.error_page, name='error_page')
 ]

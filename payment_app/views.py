@@ -35,7 +35,7 @@ def payment(request):
             current_plan = current_payment.plan
         
         context = {
-            'first_name': user.first_name,
+            'full_name': user.full_name,
             'current_plan': current_plan,
             'plan_details': PLAN_DETAILS
         }
@@ -53,7 +53,7 @@ def subscribe(request, plan_key):
     
     try:
         user = User.objects.get(id=user_id)
-    except Userinfo.DoesNotExist:
+    except User.DoesNotExist:
         return redirect('user_app:login')
     
     plan = PLAN_DETAILS.get(plan_key)
@@ -158,7 +158,7 @@ def success(request):
         return redirect('user_app:login')
     
     try:
-        user = Userinfo.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)
         payment = Payment.objects.filter(user=user, status=Payment.COMPLETED).order_by('-payment_date').first()
         
         context = {
@@ -170,7 +170,7 @@ def success(request):
         
         return render(request, 'success.html', context)
         
-    except Userinfo.DoesNotExist:
+    except User.DoesNotExist:
         return redirect('user_app:login')
 
 def error_page(request):

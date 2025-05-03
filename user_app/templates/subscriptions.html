@@ -10,13 +10,7 @@
     </h2>
     <p class="text-  text-center">Find the perfect plan tailored to your learning journey.</p>
 
-
-
-
     <div class="row justify-content-center mt-4">
-
-        <!-- Basic Plan -->
-
         <div class="col-md-4">
             <div class="p-4 text-center shadow-lg rounded text-dark" style="background: #f8f9fa;">
                 <h4 class="fw-bold">Free Plan</h4>
@@ -48,7 +42,7 @@
                 {% if current_plan == 'pro' %}
                     <span class="badge bg-success p-5">Current Plan</span>
                 {% else %}
-                    <a href="{% url 'payment_app:subscribe' 'basic' %}" class="btn btn-success">
+                    <a href="{% url 'payment_app:subscribe' 'pro' %}" class="btn btn-success">
                         {% if current_plan %}Downgrade{% else %}Select{% endif %}
                     </a>
                 {% endif %}
@@ -71,7 +65,7 @@
                 {% if current_plan == 'premium' %}
                     <span class="badge bg-success p-5">Current Plan</span>
                 {% else %}
-                    <a href="{% url 'payment_app:subscribe' 'basic' %}" class="btn btn-success">
+                    <a href="{% url 'payment_app:subscribe' 'pro' %}" class="btn btn-success">
                         {% if current_plan %}Downgrade{% else %}Select{% endif %}
                     </a>
                 {% endif %}

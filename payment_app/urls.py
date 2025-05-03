@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'payment_app'
+
 urlpatterns = [
     path('', views.payment, name='payment'),
     path('subscribe/<str:plan_key>/', views.subscribe, name='subscribe'),

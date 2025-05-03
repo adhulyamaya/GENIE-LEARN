@@ -81,6 +81,7 @@ def login_view(request):
         print(f"Login attempt with email: {email}")
 
         user = authenticate(request, email=email, password=password)
+        request.session['user_id'] = user.id
 
         if user is not None:
             login(request, user)
@@ -94,7 +95,7 @@ def login_view(request):
 
 # Logout view
 def logout_view(request):
-    logout(request)
+    request.session.flush() 
     messages.success(request, "You have been logged out.")
     return redirect('index') 
 

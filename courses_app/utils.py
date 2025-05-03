@@ -19,20 +19,10 @@ def filter_courses(user_skills, courses):
     else:
         skills = user_skills['skills'] if user_skills['skills'] else []
     
-    try:
-        experience_years = float(user_skills['experience'].split('+')[0].strip())
-    except (AttributeError, ValueError, TypeError):
-        experience_years = 0
-    
-    print(f"DEBUG - Parsed experience years: {experience_years}")
-    print(f"DEBUG - Candidate skills: {skills[:5]}...")  # First 5 skills
-    
     for course in courses:
         print(f"\nEvaluating job: {course.title}")
         print(f"skills_required field: '{course.skills}'")
-        # print(f"Job location: {course.location}")
-        # print(f"Min experience: {course.min_experience}")
-        
+       
         skill_match = False
         
         if course.skills.strip():
@@ -79,7 +69,7 @@ def rank_course(user_skills, course, api_key):
     client = Groq(api_key=api_key)
     
     prompt = f"""
-    i wants to know which course is best suited for them based on their skills and experience.
+    i wants to know which course is best suited for them based on their skills .
 
     Course Title: {course.title}
     Course Description: {course.description}
@@ -92,10 +82,9 @@ def rank_course(user_skills, course, api_key):
 
     User Details:
     Skills: {', '.join(user_skills['skills'])}
-    Experience: {user_skills['experience']}
 
     Based on the match between the skills of the user  and course  details and skill sets, assign a score from 0 to 100.
-    Consider skills match, experience relevance, and overall fit. Analyzing should be strict and fair.
+    Consider skills match, relevance, and overall fit. Analyzing should be strict and fair.
 
     Return ONLY a valid JSON object with the following structure:
     {{

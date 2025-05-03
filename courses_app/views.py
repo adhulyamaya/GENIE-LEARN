@@ -46,53 +46,150 @@ def courses(request):
 
     return render(request, "courses.html", {"courses": course_data})
 
+# def recommend_courses(request):
+#     try:
+#         user_id = request.session.get("user_id")
+#         if not user_id:
+#             return JsonResponse({"error": "User not logged in."}, status=400)
+#         user = User.objects.get(id=user_id)
+#         if not user:
+#             return JsonResponse({"error": "User not found."}, status=404)
+#         user_skills = user.skills  
+#         user_skills = {
+#             'skills': user.skills ,
+#         }
+#         print(f"Resume data extracted: {user_skills}")
+
+#         courses = Course.objects.filter(is_published=True)
+#         print(f"Total courses fetched: {len(courses)}")
+
+#         filtered_courses = filter_courses(user_skills, courses)
+#         print(f"Filtered jobs count: {len(filtered_courses)}")
+#         api_key = "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"
+
+#         ranked_courses = []
+        
+#         if filtered_courses:
+#             for course in filtered_courses:
+#                 print(f"Ranking job: {course.title}")
+#                 score = rank_course(user_skills, course, api_key)
+#                 print(f"Score for job '{course.title}': {score}")
+#                 ranked_courses.append({
+#                     "course_id": course.id,
+#                     "course_title": course.title,
+#                     "score":score,
+#                 })   
+#             ranked_courses.sort(key=lambda x: x['score'], reverse=True)
+        
+#         print(f"Ranked courses sorted: {ranked_courses}")
+#         return render(request, 'jobs/suggested_courses.html', {
+#             'matched_jobs': ranked_courses,
+#         })
+#     except User.DoesNotExist:
+#         print("Error: User not found")
+#         return JsonResponse({'error': 'User not found'}, status=404)
+    
+#     except Exception as e:
+#         print(f"Error in rank_courses view: {e}")
+#         messages.error(request, f"An error occurred: {str(e)}")
+#         return render(request, 'candidate_home.html', {'error': str(e)})
+#         # return JsonResponse({'error': 'User not found'}, status=404)
+    
+ 
+
+# def recommend_courses(request):
+#     try:
+#         if not request.user.is_authenticated:
+#             return JsonResponse({"error": "User not logged in."}, status=400)
+
+#         user = request.user
+#         profile = User.objects.get(email=user.email)
+
+#         user_skills = {
+#             'skills': profile.skills,
+#         }
+#         print(f"Resume data extracted: {user_skills}")
+
+#         courses = Course.objects.filter(is_published=True)
+#         print(f"Total courses fetched: {len(courses)}")
+
+#         filtered_courses = filter_courses(user_skills, courses)
+#         print(f"Filtered courses count: {len(filtered_courses)}")
+
+#         api_key = "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"
+
+#         ranked_courses = []
+
+#         if filtered_courses:
+#             for course in filtered_courses:
+#                 print(f"Ranking course: {course.title}")
+#                 score = rank_course(user_skills, course, api_key)
+#                 print(f"Score for course '{course.title}': {score}")
+#                 ranked_courses.append({
+#                     "course_id": course.id,
+#                     "course_title": course.title,
+#                     "score": score,
+#                 })
+#             ranked_courses.sort(key=lambda x: x['score'], reverse=True)
+
+#         print(f"Ranked courses sorted: {ranked_courses}")
+#         return render(request, 'jobs/suggested_courses.html', {
+#             'matched_jobs': ranked_courses,
+#         })
+
+#     except User.DoesNotExist:
+#         print("Error: User not found")
+#         return JsonResponse({'error': 'User not found'}, status=404)
+
+#     except Exception as e:
+#         print(f"Error in recommend_courses view: {e}")
+#         messages.error(request, f"An error occurred: {str(e)}")
+#         return render(request, 'candidate_home.html', {'error': str(e)})
+
+from django.http import JsonResponse
+
 def recommend_courses(request):
     try:
-        user_id = request.session.get("user_id")
-        if not user_id:
+        if not request.user.is_authenticated:
             return JsonResponse({"error": "User not logged in."}, status=400)
-        user = User.objects.get(id=user_id)
-        if not user:
-            return JsonResponse({"error": "User not found."}, status=404)
-        user_skills = user.skills  
+
+        user = request.user
+        profile = User.objects.get(email=user.email)
+
         user_skills = {
-            'skills': user.skills ,
+            'skills': profile.skills,
         }
-        print(f"Resume data extracted: {user_skills}")
+        print(f"Course data extracted: {user_skills}")
 
         courses = Course.objects.filter(is_published=True)
         print(f"Total courses fetched: {len(courses)}")
 
         filtered_courses = filter_courses(user_skills, courses)
-        print(f"Filtered jobs count: {len(filtered_courses)}")
+        print(f"Filtered courses count: {len(filtered_courses)}")
+
         api_key = "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"
 
         ranked_courses = []
-        
+
         if filtered_courses:
             for course in filtered_courses:
-                print(f"Ranking job: {course.title}")
+                print(f"Ranking course: {course.title}")
                 score = rank_course(user_skills, course, api_key)
-                print(f"Score for job '{course.title}': {score}")
+                print(f"Score for course '{course.title}': {score}")
                 ranked_courses.append({
                     "course_id": course.id,
                     "course_title": course.title,
-                    "score":score,
-                })   
+                    "score": score,
+                })
             ranked_courses.sort(key=lambda x: x['score'], reverse=True)
-        
+
         print(f"Ranked courses sorted: {ranked_courses}")
-        return render(request, 'jobs/suggested_courses.html', {
-            'matched_jobs': ranked_courses,
-        })
+        return JsonResponse({'recommended_courses': ranked_courses}, status=200)
+
     except User.DoesNotExist:
         print("Error: User not found")
         return JsonResponse({'error': 'User not found'}, status=404)
-    
+
     except Exception as e:
-        print(f"Error in rank_courses view: {e}")
-        messages.error(request, f"An error occurred: {str(e)}")
-        return render(request, 'candidate_home.html', {'error': str(e)})
-        # return JsonResponse({'error': 'User not found'}, status=404)
-    
- 
+        print(f"Error in recommend_courses view: {e}")
+        return JsonResponse({'error': f"An error occurred: {str(e)}"}, status=500)

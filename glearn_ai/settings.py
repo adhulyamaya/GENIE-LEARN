@@ -28,6 +28,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
+
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+
 
 # Application definition
 

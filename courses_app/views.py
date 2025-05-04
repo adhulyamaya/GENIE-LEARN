@@ -11,6 +11,7 @@ import logging
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .utils import   filter_courses, rank_course
+from .models import Lesson, Enrollment
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +134,9 @@ def recommend_courses(request):
                     "course_title": course.title,
                     "score": score,
                     "description": course.description,
-                    # "image_url": course.image.url if course.image else None,
+                    "skills": course.skills,
+                    "author": course.author.email,
+                    
                 })
             ranked_courses.sort(key=lambda x: x['score'], reverse=True)
 
@@ -148,3 +151,98 @@ def recommend_courses(request):
     except Exception as e:
         print(f"Error in recommend_courses view: {e}")
         return render(request, 'aisuggestions.html', {'error': f"An error occurred: {str(e)}"})
+
+
+def course_detail(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    context = {
+        'course': course
+    }
+    return render(request, "course_detail.html", context)
+
+
+
+# def enroll_in_course(request, lesson_id):
+#     lesson = get_object_or_404(Lesson, id=lesson_id)
+    
+#     if lesson.is_finished:
+#         messages.error(request, "This lesson is already finished.")
+#         return redirect('courses_app:course_detail', lesson_id=lesson)
+     
+#     unlocked_lessons = Lesson.objects.filter(course=lesson.course, id__lt=lesson.id).values_list('id', flat=True)
+
+#     return render(request, "course_detail.html", {
+#         'lesson': lesson,
+#         'unlocked_lessons': list(unlocked_lessons)
+#     })
+
+
+
+def enroll_in_course(request, lesson_id):
+    print(f"Enroll request received for lesson_id: {lesson_id}")
+
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    print(f"Lesson found: {lesson.title} (Order: {lesson.order})")
+
+    course = lesson.course
+    user = request.user
+    print(f"User: {user.full_name}, Course: {course.title}")
+
+    # Ensure the user is logged in
+    if not user.is_authenticated:
+        messages.error(request, "You must be logged in to enroll in a course.")
+        return redirect('login')  # Redirect to the login page if user is not logged in
+
+    # Get or create the enrollment for the user and course
+    enrollment, created = Enrollment.objects.get_or_create(user=user, course=course)
+    print(f"Enrollment {'created' if created else 'retrieved'} for user: {user.full_name}")
+
+    # Check if previous lessons are completed
+    previous_lessons = Lesson.objects.filter(course=course, order__lt=lesson.order)
+    incomplete = [l for l in previous_lessons if l not in enrollment.completed_lessons.all()]
+
+    print(f"Previous lessons count: {previous_lessons.count()}")
+    print(f"Incomplete previous lessons: {[l.title for l in incomplete]}")
+
+    if incomplete:
+        messages.error(request, "Please complete the previous lessons first.")
+        print("Redirecting due to incomplete lessons.")
+        return redirect('courses_app:course_detail', course_id=course.id)
+
+    # If the lesson is not completed, mark it as completed and update score
+    if lesson not in enrollment.completed_lessons.all():
+        enrollment.completed_lessons.add(lesson)
+        enrollment.score += 10  # Add 10 points for new completion
+        enrollment.update_progress()  # Update progress based on completed lessons
+        enrollment.save()
+
+        print(f"Lesson '{lesson.title}' marked as completed.")
+        print(f"Score increased by 10. Total score: {enrollment.score}")
+        messages.success(request, f"Lesson '{lesson.title}' marked as completed. Progress updated. 10 points added!")
+    else:
+        print(f"Lesson '{lesson.title}' was already marked as completed. No score added.")
+        messages.info(request, f"Lesson '{lesson.title}' was already completed. No additional score added.")
+
+    print("Redirecting back to course detail page.")
+    return redirect('courses_app:course_detail', course_id=course.id)
+
+
+def get_course_progress(request, course_id):
+    """Get the progress of a specific course for the logged-in user."""
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "User not logged in."}, status=400)
+
+    user = request.user
+    enrollment = Enrollment.objects.filter(user=user, course_id=course_id).first()
+
+    if enrollment:
+        progress = enrollment.progress
+        completed_lessons = enrollment.completed_lessons.count()
+        total_lessons = enrollment.course.lessons.count()
+        return JsonResponse({
+            "progress": progress,
+            "completed_lessons": completed_lessons,
+            "total_lessons": total_lessons,
+        })
+    else:
+        return JsonResponse({"error": "Enrollment not found."}, status=404)

@@ -64,7 +64,7 @@
       <!-- AI Recommendations Card -->
       <div style="background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333;">
         <h3 style="color: #00ffcc; font-size: 18px; margin-bottom: 10px;">AI Recommendations</h3>
-        <p style="color: #ccc; margin: 0 0 15px;">Try “Advanced Python for Data Science” based on your ML interest.</p>
+        <p style="color: #ccc; margin: 0 0 15px;">Based on your interests and preferences, our AI recommends the following courses just for you</p>
         <a href={% url "courses_app:recommend_courses" %} style="display: inline-block; padding: 8px 16px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none; transition: background 0.3s, color 0.3s;"
            onmouseover="this.style.background='#00ffcc'; this.style.color='#000';"
            onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
@@ -93,6 +93,19 @@
         </ul>
       </div>
 
+      <!-- Recent Activity Card -->
+      <div style="background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333;">
+        <h3 style="color: #00ffcc; font-size: 18px; margin-bottom: 10px;">Recent Activity</h3>
+        <ul style="color: #ccc; margin: 0; padding-left: 0; list-style: none;">
+          {% if completed_lessons %}
+            {% for lesson in completed_lessons %}
+              <li>✅ Completed “{{ lesson.title }}”</li>
+            {% endfor %}
+          {% else %}
+            <li>No lessons completed yet.</li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
   </main>
 </div>

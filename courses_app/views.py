@@ -114,6 +114,32 @@ def course_detail(request, course_id):
     }
     return render(request, "course_detail.html", context)
 
+
+def completed_lesson(request):
+    user = request.user
+    print(f"User: {user.full_name}")   
+
+    enrollments = Enrollment.objects.filter(user=user)
+    print(f"Found {len(enrollments)} enrollments for the user.") 
+
+    enrollments = enrollments.prefetch_related('completed_lessons')
+    completed_lessons = set()  
+    print(f"Initial completed lessons set: {completed_lessons}")  
+
+    for enrollment in enrollments:
+        print(f"Processing enrollment for course: {enrollment.course.name}") 
+        for lesson in enrollment.completed_lessons.all():
+            print(f"Adding lesson: {lesson.title}") 
+            completed_lessons.add(lesson)  
+
+    print(f"Completed lessons count after processing: {len(completed_lessons)}") 
+
+    return render(request, "completed_lessons.html", {
+        "completed_lessons": list(completed_lessons)
+    })
+
+
+
 def enroll_in_course(request, lesson_id):
     print(f"Enroll request received for lesson_id: {lesson_id}")
 

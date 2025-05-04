@@ -4,13 +4,13 @@
 
 <style>
     .score-card {
-        background-color: #000 !important; /* Black background */
-        border: 2px solid #00ffcc !important; /* Teal border */
-        color: #fff; /* White text */
+        background-color: #000 !important;
+        border: 2px solid #00ffcc !important;
+        color: #fff;
     }
 
     .score-card:hover {
-        border-color: #1affd5 !important; /* Lighter teal on hover */
+        border-color: #1affd5 !important;
     }
 
     .score-card img {
@@ -23,17 +23,20 @@
 
     <div class="row">
         <!-- Left Column: Top Scorer -->
+        {% if top_candidate %}
         <div class="col-md-4 mb-4">
             <div class="card score-card shadow-lg h-100">
                 <div class="card-body d-flex flex-column justify-content-center align-items-center">
                     <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Top Candidate" class="img-fluid rounded-circle mb-3" style="width: 120px; height: 120px;">
-                    <h4 class="card-title text-warning">🥇 {{ top_candidate.name }}</h4>
+                    <h4 class="card-title text-warning">🥇 {{ top_candidate.user.full_name}}</h4>
                     <p class="card-text mt-2 fs-5"><strong>Score:</strong> <span class="text-success">{{ top_candidate.score }}</span></p>
-                    <p class="card-text"><strong>Experience:</strong> {{ top_candidate.exp }} years</p>
-                    <p class="card-text"><strong>Domain:</strong> {{ top_candidate.domain }}</p>
+                    <p class="card-text"><strong>Course:</strong> {{ top_candidate.course.title }}</p>
+                    <p class="mb-0"><strong>Progress:</strong> {{ top_candidate.progress|floatformat:0 }}%</p>
+                    <p class="card-text"><strong>Enrolled On:</strong> {{ top_candidate.enrolled_on|date:"M d, Y" }}</p>
                 </div>
             </div>
         </div>
+        {% endif %}
 
         <!-- Right Column: Other Candidates -->
         <div class="col-md-8">
@@ -43,12 +46,16 @@
                     <div class="card score-card shadow-sm h-100">
                         <div class="card-body text-center">
                             <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-fluid rounded-circle mb-3" style="width: 80px; height: 80px;" alt="Candidate">
-                            <h5 class="card-title text-info fw-bold">{{ candidate.name }}</h5>
+                            <h5 class="card-title text-info fw-bold">{{ candidate.user.full_name |default:"Admin"}}</h5>
                             <p class="mb-1"><strong>Score:</strong> {{ candidate.score }}</p>
-                            <p class="mb-1"><strong>Experience:</strong> {{ candidate.exp }} years</p>
-                            <p class="mb-0"><strong>Domain:</strong> {{ candidate.domain }}</p>
+                            <p class="mb-1"><strong>Course:</strong> {{ candidate.course.title }}</p>
+                            <p class="mb-0"><strong>Progress:</strong> {{ candidate.progress|floatformat:0 }}%</p>
                         </div>
                     </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-center text-light">No candidates found.</p>
                 </div>
                 {% endfor %}
             </div>

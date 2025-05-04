@@ -5,7 +5,6 @@ app_name = 'score_board'  # Namespace for better URL handling
 
 urlpatterns = [
     path('scorecards/', views.scorecards, name='scorecards'),
-    
 
 ]
 

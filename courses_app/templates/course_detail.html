@@ -72,18 +72,6 @@
                   Your browser does not support the video tag.
                 </video>
               {% endif %}
-
-              {% if lesson in enrollment.completed_lessons.all %}
-                <form method="post" action="{% url 'courses_app:mark_lesson_status' lesson.id %}">
-                  {% csrf_token %}
-                  <input type="hidden" name="status" value="pending">
-                  <button type="submit" style="margin-top: 10px; padding: 6px 12px; font-size: 13px; border-radius: 6px; border: none; background-color: #888; color: #fff;">
-                    Mark as Pending
-                  </button>
-                </form>
-              {% else %}
-                <p style="color: #666; font-size: 13px; margin-top: 10px;">Complete the previous lesson to unlock this one.</p>
-              {% endif %}
             </div>
           {% endfor %}
         </div>

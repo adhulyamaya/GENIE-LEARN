@@ -7,7 +7,9 @@ app_name = 'courses_app'
 urlpatterns = [
     path('courses/', views.courses, name='courses'),
     path('recommend_courses/', views.recommend_courses, name='recommend_courses'),
-
+    
+    path('course/<int:course_id>/', views.course_detail, name='course_detail'),
+    path('courses/<int:lesson_id>/', views.enroll_in_course, name='enroll_in_course'),
 ]
 
 

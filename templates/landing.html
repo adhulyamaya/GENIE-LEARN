@@ -25,13 +25,13 @@
          onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
         <i class="ri-book-open-line" style="vertical-align: middle;"></i> Courses
       </a>
-      <a href="{% url 'courses_app:courses' %}"
+      <a href="{% url 'score_board:scorecards' %}"
          style="display: block; margin: 10px 0; padding: 10px; color: #00ffcc; background: transparent; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none; text-align: center; transition: background 0.3s, color 0.3s;"
          onmouseover="this.style.background='#00ffcc'; this.style.color='#000';"
          onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
         <i class="ri-bar-chart-line" style="vertical-align: middle;"></i> Scorecards
       </a>
-      <a href="{% url 'courses_app:courses'"
+      <a href="{% url 'user_app:subscriptions' %}"
          style="display: block; margin: 10px 0; padding: 10px; color: #00ffcc; background: transparent; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none; text-align: center; transition: background 0.3s, color 0.3s;"
          onmouseover="this.style.background='#00ffcc'; this.style.color='#000';"
          onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
@@ -48,7 +48,7 @@
 
   <!-- Main Content -->
   <main style="flex: 1; padding: 40px; overflow-y: auto;">
-    <h2 style="font-size: 32px; color: white; margin-bottom: 5px;">Welcome, {{ user.first_name }} Meera</h2>
+    <h2 style="font-size: 32px; color: white; margin-bottom: 5px;">Welcome, {{ user.full_name }}</h2>
     <p style="font-size: 14px; color: #aaa; margin-bottom: 30px;">Track your progress, explore new skills, and accelerate your journey with AI-powered insights.</p>
 
     <!-- Cards Grid (2 per row) -->
@@ -65,12 +65,13 @@
       <div style="background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333;">
         <h3 style="color: #00ffcc; font-size: 18px; margin-bottom: 10px;">AI Recommendations</h3>
         <p style="color: #ccc; margin: 0 0 15px;">Try “Advanced Python for Data Science” based on your ML interest.</p>
-        <a href="#" style="display: inline-block; padding: 8px 16px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none; transition: background 0.3s, color 0.3s;"
+        <a href={% url "courses_app:recommend_courses" %} style="display: inline-block; padding: 8px 16px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none; transition: background 0.3s, color 0.3s;"
            onmouseover="this.style.background='#00ffcc'; this.style.color='#000';"
            onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
           Explore
         </a>
       </div>
+    
 
       <!-- Upcoming Deadlines Card -->
       <div style="background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333;">

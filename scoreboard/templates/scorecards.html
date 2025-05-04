@@ -2,6 +2,58 @@
 {% load static %}
 {% block content %}
 
-<h2 class="text-2xl font-bold text-center mb-6">Scorecards</h2>
-{% endblock %}
+<style>
+    .score-card {
+        background-color: #000 !important; /* Black background */
+        border: 2px solid #00ffcc !important; /* Teal border */
+        color: #fff; /* White text */
+    }
 
+    .score-card:hover {
+        border-color: #1affd5 !important; /* Lighter teal on hover */
+    }
+
+    .score-card img {
+        border: 3px solid #00ffcc;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5 display-5 fw-bold text-white">🏅 Gamification Scoreboard</h2>
+
+    <div class="row">
+        <!-- Left Column: Top Scorer -->
+        <div class="col-md-4 mb-4">
+            <div class="card score-card shadow-lg h-100">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Top Candidate" class="img-fluid rounded-circle mb-3" style="width: 120px; height: 120px;">
+                    <h4 class="card-title text-warning">🥇 {{ top_candidate.name }}</h4>
+                    <p class="card-text mt-2 fs-5"><strong>Score:</strong> <span class="text-success">{{ top_candidate.score }}</span></p>
+                    <p class="card-text"><strong>Experience:</strong> {{ top_candidate.exp }} years</p>
+                    <p class="card-text"><strong>Domain:</strong> {{ top_candidate.domain }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Other Candidates -->
+        <div class="col-md-8">
+            <div class="row">
+                {% for candidate in candidates %}
+                <div class="col-md-6 mb-4">
+                    <div class="card score-card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-fluid rounded-circle mb-3" style="width: 80px; height: 80px;" alt="Candidate">
+                            <h5 class="card-title text-info fw-bold">{{ candidate.name }}</h5>
+                            <p class="mb-1"><strong>Score:</strong> {{ candidate.score }}</p>
+                            <p class="mb-1"><strong>Experience:</strong> {{ candidate.exp }} years</p>
+                            <p class="mb-0"><strong>Domain:</strong> {{ candidate.domain }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

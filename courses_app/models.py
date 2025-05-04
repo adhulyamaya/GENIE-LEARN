@@ -45,6 +45,8 @@ class Lesson(models.Model):
     video = models.FileField(upload_to='lesson_videos/', null=True, blank=True)
     order = models.PositiveIntegerField(default=0)
 
+    is_finished = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.course.title} - {self.title}"
 
@@ -54,9 +56,19 @@ class Enrollment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     enrolled_on = models.DateTimeField(auto_now_add=True)
     progress = models.FloatField(default=0.0)
+    completed_lessons = models.ManyToManyField('Lesson', blank=True)
+    score = models.IntegerField(default=0)
+
 
     class Meta:
         unique_together = ('user', 'course')
 
+    def update_progress(self):
+        total_lessons = self.course.lessons.count()
+        completed_lessons = self.completed_lessons.count()
+        if total_lessons > 0:
+            self.progress = (completed_lessons / total_lessons) * 100
+        self.save()
+    
     def __str__(self):
-        return f"{self.user.email} enrolled in {self.course.title}"
+        return f"{self.user.full_name} - {self.course.title}"

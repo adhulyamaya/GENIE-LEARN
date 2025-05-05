@@ -72,7 +72,7 @@ def recommend_courses(request):
         filtered_courses = filter_courses(user_skills, courses)
         print(f"Filtered courses count: {len(filtered_courses)}")
 
-        api_key = "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"
+        api_key = "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"
 
         ranked_courses = []
 

@@ -21,7 +21,7 @@ class Course(models.Model):
 ]
     title = models.CharField(max_length=255)
     description = models.TextField()
-    skills = models.TextField(null=True, blank=True)  # Comma-separated skills
+    skills = models.TextField(null=True, blank=True)  
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='courses')
     thumbnail = models.ImageField(upload_to='course_thumbnails/', null=True, blank=True)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES, default='beginner')

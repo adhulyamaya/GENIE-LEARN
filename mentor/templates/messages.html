@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  .chat-container {
+    max-width: 800px;
+    margin: auto;
+    background-color: #111;
+    color: #00ffcc;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
+  }
+
+  .chat-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .chat-messages {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #000;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .message {
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #222;
+    width: fit-content;
+    max-width: 70%;
+  }
+
+  .message.you {
+    background-color: #004d4d;
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .message.other {
+    background-color: #333;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .message small {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.8em;
+    color: #aaa;
+  }
+
+  form.chat-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  form.chat-form textarea {
+    flex-grow: 1;
+    padding: 10px;
+    background-color: #000;
+    color: #00ffcc;
+    border: 1px solid #00ffcc;
+    border-radius: 5px;
+  }
+
+  form.chat-form button {
+    background-color: #00ffcc;
+    color: #000;
+    padding: 10px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  form.chat-form button:hover {
+    background-color: #00e6b8;
+  }
+</style>
+
+<div class="chat-container">
+  <div class="chat-header">
+    <h3>Chat with {{ receiver.get_full_name|default:receiver.username }}</h3>
+    <p><strong>Course:</strong> {{ course.name }}</p>
+  </div>
+
+  <div class="chat-messages">
+    {% for msg in messages %}
+      <div class="message {% if msg.sender == request.user %}you{% else %}other{% endif %}">
+        {{ msg.message }}
+        <small>{{ msg.sender.get_full_name|default:msg.sender.username }} • {{ msg.timestamp|date:"M d, Y H:i" }}</small>
+      </div>
+    {% empty %}
+      <p>No messages yet.</p>
+    {% endfor %}
+  </div>
+
+  <form method="post" class="chat-form">
+    {% csrf_token %}
+    <textarea name="message" rows="2" placeholder="Type your message here..."></textarea>
+    <button type="submit">Send</button>
+  </form>
+</div>
+{% endblock %}

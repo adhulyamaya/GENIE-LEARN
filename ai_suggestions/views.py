@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.shortcuts import redirect
 
-api_key = "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"
+api_key = "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"
 
 def rank_skills(request):
     user_id = request.session.get("user_id")

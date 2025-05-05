@@ -19,8 +19,7 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
 
-    # ROLE_CHOICES = (('student', 'Student'), ('mentor', 'Mentor'))
-    # role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, null=True, blank=True) 
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=30, null=True, blank=True)
     educational_qualification = models.CharField(max_length=50, null=True, blank=True)
@@ -28,6 +27,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=20, unique=True, null=True, blank=True)
     is_email_verified = models.BooleanField(default=False)
     is_phone_verified = models.BooleanField(default=False)
+    location = models.CharField(max_length=50, null=True, blank=True)
+    expertise = models.CharField(max_length=50, null=True, blank=True) 
     
     subscriptions_type = models.CharField(max_length=20, null=True, blank=True)
     registration_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)

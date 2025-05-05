@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'ai_suggestions',
     'payment_app',
     'channels',
+    'mentor',
     
 ]
 

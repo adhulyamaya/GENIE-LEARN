@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #f8f9fa;
+  }
+  .sidebar {
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    width: 220px;
+  }
+  .sidebar a {
+    color: #ccc;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .sidebar a:hover {
+    background-color: #495057;
+    color: white;
+  }
+  .sidebar i {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  .main-content {
+    margin-left: 240px;
+    padding: 30px;
+  }
+  .profile-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.08);
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .profile-card img {
+    width: 100px;
+    border-radius: 50%;
+  }
+  .profile-info h4 {
+    margin-bottom: 5px;
+  }
+  .profile-info p {
+    margin: 0;
+    color: #666;
+  }
+</style>
+
+<div class="sidebar">
+  <h4 class="text-center mb-4"><i class="ri-user-star-line"></i> Mentor Panel</h4>
+  <a href="#"><i class="ri-dashboard-line"></i> Dashboard</a>
+  <a href="#"><i class="ri-group-line"></i> My Mentees</a>
+  <a href="#"><i class="ri-calendar-line"></i> Schedule</a>
+  <a href="#"><i class="ri-chat-3-line"></i> Messages</a>
+  <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+  <a href="#"><i class="ri-logout-box-line"></i> Logout</a>
+</div>
+
+<div class="main-content">
+  <h2 class="mb-4"><i class="ri-dashboard-fill"></i> Dashboard</h2>
+
+  <div class="profile-card">
+    <img src="{% static 'images/default-profile.png' %}" alt="Mentor Profile">
+    <div class="profile-info">
+      <h4>{{ mentor.name }}</h4>
+      <p><i class="ri-mail-line"></i> {{ mentor.email }}</p>
+      <p><i class="ri-briefcase-line"></i> {{ mentor.expertise }}</p>
+      <p><i class="ri-map-pin-line"></i> {{ mentor.location }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

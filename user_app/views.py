@@ -1,27 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib import messages
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from user_app.models import User
 from django.db import IntegrityError
 from django.http import JsonResponse
-from django.contrib.auth import login
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import IntegrityError
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
+
 from django.http import JsonResponse
-from django.shortcuts import redirect
+
 
 
 User = get_user_model()
@@ -39,6 +30,7 @@ def register_view(request):
             subscriptions_type = request.POST.get('subscriptions_type')
             educational_qualification = request.POST.get('educational_qualification')
             certificates = request.FILES.get('certificates')
+            role = request.POST.get('role')
 
             if password1 != password2:
                 messages.error(request, "Passwords do not match!")
@@ -56,7 +48,9 @@ def register_view(request):
                 gender=gender,
                 subscriptions_type=subscriptions_type,
                 educational_qualification=educational_qualification,
-                certificate_file=certificates
+                certificate_file=certificates,
+                role=role,
+
             )
 
             login(request, user)
@@ -81,15 +75,20 @@ def login_view(request):
         print(f"Login attempt with email: {email}")
 
         user = authenticate(request, email=email, password=password)
-        request.session['user_id'] = user.id
 
         if user is not None:
             login(request, user)
+            request.session['user_id'] = user.id
             messages.success(request, f"Welcome, {user.full_name}!")
-            return redirect('landing') 
+
+            if user.role == 'mentor':
+                return redirect('mentor_dashboard')  
+            else:
+                return redirect('landing')  
+
         else:
             messages.error(request, "Invalid credentials.")
-            return redirect('index') 
+            return redirect('index')
     return redirect('index')
 
 

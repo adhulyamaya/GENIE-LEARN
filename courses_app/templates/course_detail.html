@@ -7,36 +7,51 @@
   <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 40px; max-width: 1200px; margin: 0 auto;">
 
     <!-- Left: Course Card -->
-    <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px;">
+    <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px; position: relative;">
+
+      <!-- Title & Difficulty Badge -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <h3 style="font-size: 24px; font-weight: bold; margin: 0; color: #fff;">{{ course.title }}</h3>
         <span style="font-size: 12px; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background-color: #00ffcc; color: #000;">
           {{ course.difficulty }}
         </span>
       </div>
-
-      <p style="font-size: 14px; color: #ccc; margin: 0 0 12px;">
+    
+      <!-- Course Meta Info -->
+      <p style="font-size: 14px; color: #ccc; margin-bottom: 10px;">
         <i class="ri-price-tag-3-line" aria-label="Category"></i> {{ course.category }}
       </p>
-
+    
       <p style="font-size: 15px; color: #bbb; margin-bottom: 20px;">{{ course.description }}</p>
-
-      <p style="font-size: 13px; color: #888; margin: 0 0 8px;">
-        <i class="ri-lightbulb-line" aria-label="Skills"></i> Skills: {{ course.skills }}
+    
+      <p style="font-size: 13px; color: #888; margin-bottom: 8px;">
+        <i class="ri-lightbulb-line" aria-label="Skills"></i> <strong>Skills:</strong> {{ course.skills }}
       </p>
-
-      <p style="font-size: 13px; color: #888; margin: 0 0 20px;">
-        <i class="ri-user-line" aria-label="Author"></i> Author: {{ course.author }}
+    
+      <p style="font-size: 13px; color: #888; margin-bottom: 20px;">
+        <i class="ri-user-line" aria-label="Author"></i> <strong>Author:</strong> {{ course.author }}
       </p>
-
-      <div style="text-align: right;">
-        <a href="{% url 'courses_app:courses' %}" style="padding: 8px 16px; font-size: 14px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none;"
+    
+      <!-- Button Container -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+        <!-- Mentor Chat Button -->
+        <a href="{% url 'chat:mentor_support' course.id %}"
+           style="padding: 8px 16px; font-size: 14px; color: #000; background-color: #00ffcc; border-radius: 6px; text-decoration: none;"
+           onmouseover="this.style.background='#1affd5';"
+           onmouseout="this.style.background='#00ffcc';">
+          💬 Mentor Support Chat
+        </a>
+    
+        <!-- Back Button -->
+        <a href="{% url 'courses_app:courses' %}"
+           style="padding: 8px 16px; font-size: 14px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none;"
            onmouseover="this.style.background='#00ffcc'; this.style.color='#000';"
            onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
           ← Back to Courses
         </a>
       </div>
     </div>
+    
 
     <!-- Right: Course Modules -->
     <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px;">
@@ -91,146 +106,9 @@
         </div>
       {% else %}
         <p style="color: #999;">No modules available for this course.</p>
-      {% endif %}
-
-      <!-- Total Score Display -->
-      <div style="margin-top: 30px; padding: 20px; background-color: #333; border-radius: 10px;">
-        <h4 style="color: #fff; font-size: 18px;">Total Score: {{ enrollment.score }} Points</h4>
-      </div>
+      {% endif %} 
     </div>
   </div>
 </div>
 {% endblock %}
 
-
-
-
-
-
-
-
-
-              <!-- Display Lesson Score -->
-              {% comment %} {% if lesson in enrollment.completed_lessons.all %}
-                <p style="color: #fff; font-size: 14px; margin-top: 10px;">
-                  You earned 10 points for completing this lesson!
-                </p>
-              {% endif %} {% endcomment %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% comment %} {% extends 'base.html' %}
-
-{% block content %}
-<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-
-<div style="padding: 40px; background-color: #121212; min-height: 100vh;">
-  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 40px; max-width: 1200px; margin: 0 auto;">
-
-    <!-- Left: Course Card -->
-    <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="font-size: 24px; font-weight: bold; margin: 0; color: #fff;">{{ course.title }}</h3>
-        <span style="font-size: 12px; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background-color: #00ffcc; color: #000;">
-          {{ course.difficulty }}
-        </span>
-      </div>
-
-      <p style="font-size: 14px; color: #ccc; margin: 0 0 12px;">
-        <i class="ri-price-tag-3-line"></i> {{ course.category }}
-      </p>
-
-      <p style="font-size: 15px; color: #bbb; margin-bottom: 20px;">
-        {{ course.description }}
-      </p>
-
-      <p style="font-size: 13px; color: #888; margin: 0 0 8px;">
-        <i class="ri-lightbulb-line"></i> Skills: {{ course.skills }}
-      </p>
-
-      <p style="font-size: 13px; color: #888; margin: 0 0 20px;">
-        <i class="ri-user-line"></i> Author: {{ course.author }}
-      </p>
-
-      <div style="text-align: right;">
-        <a href="{% url 'courses_app:courses' %}" style="padding: 8px 16px; font-size: 14px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none;"
-           onmouseover="this.style.background='#00ffcc'; this.style.color='#000';"
-           onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
-          ← Back to Courses
-        </a>
-      </div>
-    </div>
-
-    <!-- Right: Course Modules -->
-    <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px;">
-      <h3 style="font-size: 22px; font-weight: bold; color: #00ffcc; margin-bottom: 20px;">
-        <i class="ri-list-unordered"></i> Course Modules
-      </h3>
-  
-      {% if course.lessons.all %}
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-          {% for lesson in course.lessons.all|dictsort:"order" %}
-            <div style="background-color: #222; padding: 16px; border-radius: 10px; border: 1px solid #444; position: relative; opacity: {% if lesson.is_finished %}1{% else %}0.5{% endif %};">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h4 style="color: #fff; font-size: 16px; margin: 0;">
-                  {{ lesson.order }}. {{ lesson.title }} 
-                  <span style="font-size: 14px; color: {% if lesson.is_finished %}#00ffcc{% else %}#888{% endif %};">
-                    {% if lesson.is_finished %}Completed{% else %}Pending{% endif %}
-                  </span>
-                </h4>
-                <!-- Lock/Unlock Button -->
-                <a href="{% url 'courses_app:enroll_in_course' lesson.id %}" style="color: #00ffcc; font-size: 18px; text-decoration: none;">
-                  <i class="{% if lesson.is_finished %}ri-lock-unlock-line{% else %}ri-lock-line{% endif %}"></i>
-                </a>
-              </div>
-  
-              {% if lesson.content %}
-                <p style="color: #bbb; font-size: 14px; margin: 10px 0;">{{ lesson.content|truncatewords:20 }}</p>
-              {% endif %}
-  
-              {% if lesson.video %}
-                <video width="100%" controls style="margin-top: 10px; border-radius: 8px;">
-                  <source src="{{ lesson.video.url }}" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              {% endif %}
-  
-              {% if lesson.is_finished %}
-                <form method="post" action="{% url 'courses_app:mark_lesson_status' lesson.id %}">
-                  {% csrf_token %}
-                  <input type="hidden" name="status" value="pending">
-                  <button type="submit" style="margin-top: 10px; padding: 6px 12px; font-size: 13px; border-radius: 6px; border: none; background-color: #888; color: #fff;">
-                    Mark as Pending
-                  </button>
-                </form>
-              {% else %}
-                <p style="color: #666; font-size: 13px; margin-top: 10px;">Complete the previous lesson to unlock this one.</p>
-              {% endif %}
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p style="color: #999;">No modules available for this course.</p>
-      {% endif %}
-    </div>
-  </div>
-</div>
-{% endblock %} {% endcomment %}

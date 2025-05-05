@@ -111,3 +111,21 @@ class QuizResult(models.Model):
 
     def __str__(self):
         return f'{self.user.full_name} - {self.quiz.title} - {self.score}/{self.total}'
+
+
+
+
+ 
+
+class ChatMessage(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='chat_messages')  
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages', null=True, blank=True)  
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages', null=True, blank=True)  
+    message = models.TextField() 
+    timestamp = models.DateTimeField(auto_now_add=True)  
+
+    def __str__(self):
+        return f"{self.sender if self.sender else self.receiver} to {self.receiver if self.receiver else self.sender} at {self.timestamp}"
+
+    class Meta:
+        ordering = ['timestamp']

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -17,6 +18,10 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = [
+        ('mentor', 'Mentor'),
+        ('student', 'Student'),
+    ]
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=30, null=True, blank=True)
     educational_qualification = models.CharField(max_length=50, null=True, blank=True)
@@ -29,6 +34,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     registration_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_login = models.DateTimeField(auto_now=True, null=True, blank=True)
 
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
     bio = models.TextField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)

@@ -39,6 +39,7 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +52,8 @@ INSTALLED_APPS = [
     'scoreboard',
     'ai_suggestions',
     'payment_app',
+    'channels',
+    
 ]
 
 MIDDLEWARE = [
@@ -81,8 +84,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'glearn_ai.wsgi.application'
+# WSGI_APPLICATION = 'glearn_ai.wsgi.application'
 
+ASGI_APPLICATION = 'glearn_ai.asgi.application'  
+
+
+CHANNEL_LAYERS = {
+    'default': {        
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {            
+              "hosts": [("127.0.0.1", 6379)],             
+        },
+    }}
+
+CHANNELS_WS_PROTOCOLS = ["websocket"]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -121,6 +136,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {'hosts': [('127.0.0.1', 6379)]},
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

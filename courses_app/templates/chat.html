@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="chat-container" style="max-width: 600px; margin: 20px auto;">
-    <h2>Chat with Mentor</h2>
+    <h2>Chat with Mentor: {{ mentor.full_name }}</h2>
     <div id="chat-box" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px;">
         <!-- Messages will appear here -->
     </div>
@@ -17,14 +17,9 @@
     const courseId = {{ course.id }};
     const senderId = {{ student.id }};
     const receiverId = {{ mentor.id }};
-    {% comment %} const socket = new WebSocket(
-        'ws://' + window.location.host + `/ws/chat/support/${courseId}`
-    ); {% endcomment %}
-
     const socket = new WebSocket(
-    'ws://localhost:8000/ws/chat/support/' + courseId + '/'
-);
-
+        'ws://' + window.location.host + `/ws/chat/support/${courseId}/`
+    );
 
     const chatBox = document.getElementById('chat-box');
     const form = document.getElementById('chat-form');

@@ -224,7 +224,7 @@ def submit_quiz(request, lesson_id, quiz_id):
         for question in questions:
             selected_option = request.POST.get(f'question_{question.id}')
             if selected_option == question.correct_option:
-                score += 1
+                score += 10
 
         # Save the result to the database
         QuizResult.objects.create(
@@ -259,3 +259,32 @@ def get_course_progress(request, course_id):
         })
     else:
         return JsonResponse({"error": "Enrollment not found."}, status=404)
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Course, Enrollment
+
+def mentor_support(request, course_id):
+    user = request.user
+    print(f"Logged-in user: {user} (ID: {user.id})")
+
+    course = get_object_or_404(Course, id=course_id)
+    print(f"Accessing course: {course.title} (ID: {course.id})")
+
+    enrollment = Enrollment.objects.filter(course=course, user=request.user).first()
+    if enrollment:
+        print(f"Enrollment found for student {user.full_name} in course {course.title}")
+    else:
+        print(f"No enrollment found for student {user.full_name} in course {course.title}")
+
+    print(f"Course mentor: {course.author} (ID: {course.author.id})")
+
+    context = {
+        'course': course,
+        'mentor': course.author,  
+        'student': request.user,
+        'enrollment': enrollment
+    }
+    return render(request, 'mentor_chat.html', context)
+

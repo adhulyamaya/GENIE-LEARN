@@ -90,19 +90,40 @@
 #         }))
 
 # consumers.py
+
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.shortcuts import get_object_or_404
 from .models import Course
-from user_app.models import User,ChatMessage 
-
+from user_app.models import User
+from courses_app.models import ChatMessage 
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        self.room_name = 'chat_room'
+        self.room_group_name = f'chat_{self.room_name}'
+
+        #  room group lekk join
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        # Accept the WebSocket connection
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+    async def connecting(self):
         self.course_id = self.scope['url_route']['kwargs']['course_id']
         self.course = get_object_or_404(Course, id=self.course_id)
         self.room_group_name = f'course_{self.course_id}_chat'
         self.user = self.scope['user']
+
         if not self.user.is_authenticated:
             await self.close()
             return
@@ -118,7 +139,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-    async def disconnect(self, close_code):
+    async def disconnecting(self, close_code):
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
@@ -142,13 +163,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event))
 
     async def save_message(self, message):
-        if self.user.profile:
+        # Check if the user has a profile (adjust as necessary)
+        if hasattr(self.user, 'profile'):  # or check another condition
             sender = self.user
             receiver = self.course.author  
         else:
             sender = self.course.author
             receiver = self.user
 
+        # Save the message to the database
         ChatMessage.objects.create(
             course=self.course,
             sender=sender,

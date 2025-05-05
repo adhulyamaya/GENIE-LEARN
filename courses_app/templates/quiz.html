@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="padding: 40px; background-color: #121212; min-height: 100vh; text-align: center; color: #fff;">
+  <h2 style="color: #00ffcc;">{{ quiz.title }}</h2>
+
+  <form id="quiz-form" method="POST" action="{% url 'courses_app:submit_quiz' lesson_id=quiz.lesson.id quiz_id=quiz.id %}">
+    {% csrf_token %}
+
+    {% for question in quiz.questions.all %}
+      <div style="margin-bottom: 30px; text-align: left;">
+        <h4 style="color: #fff;">{{ forloop.counter }}. {{ question.question_text }}</h4>
+        <div>
+          <label><input type="radio" name="question_{{ question.id }}" value="A"> {{ question.option_a }}</label><br>
+          <label><input type="radio" name="question_{{ question.id }}" value="B"> {{ question.option_b }}</label><br>
+          <label><input type="radio" name="question_{{ question.id }}" value="C"> {{ question.option_c }}</label><br>
+          <label><input type="radio" name="question_{{ question.id }}" value="D"> {{ question.option_d }}</label>
+        </div>
+      </div>
+    {% endfor %}
+
+    <button type="submit" style="padding: 10px 20px; background-color: #00ffcc; color: #000; border: none; border-radius: 6px;">
+      Submit Quiz
+    </button>
+  </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="quizResultModal" tabindex="-1" aria-labelledby="quizResultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background-color: #1e1e1e; color: white;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="quizResultModalLabel">Quiz Result</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="quiz-score-text">Calculating your score...</p>
+        <a id="back-to-course-btn" href="" class="btn" style="margin-top: 20px; background-color: #00ffcc; color: #000;">
+          Back to Course
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  $('#quiz-form').on('submit', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const url = form.attr('action');
+    const data = form.serialize();
+
+    $.post(url, data)
+      .done(function(response) {
+        $('#quiz-score-text').text(`You scored ${response.score} out of ${response.total}!`);
+        $('#back-to-course-btn').attr('href', `/courses/${response.course_id}/`);  // replace with your course detail route if needed
+
+        const modal = new bootstrap.Modal(document.getElementById('quizResultModal'));
+        modal.show();
+      })
+      .fail(function() {
+        alert('Something went wrong. Please try again.');
+      });
+  });
+</script>
+{% endblock %}
+

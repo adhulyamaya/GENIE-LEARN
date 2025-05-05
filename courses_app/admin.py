@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Lesson, Enrollment
+from .models import Course, Lesson, Enrollment,Quiz, Question
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'difficulty', 'category', 'price', 'is_published', 'created_at')
@@ -8,9 +8,9 @@ class CourseAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
     fields = ('title', 'description', 'skills', 'author', 'thumbnail', 'difficulty', 'category', 'tags', 'price', 'is_published')
 
-
-
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson)
 admin.site.register(Enrollment)
+admin.site.register(Quiz)
+admin.site.register(Question)
 

@@ -12,6 +12,10 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .utils import   filter_courses, rank_course
 from .models import Lesson, Enrollment
+from courses_app.models import Quiz
+from django.shortcuts import render, get_object_or_404
+from .models import Lesson, Quiz, Question
+from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
 
@@ -170,7 +174,7 @@ def enroll_in_course(request, lesson_id):
 
     if lesson not in enrollment.completed_lessons.all():
         enrollment.completed_lessons.add(lesson)
-        enrollment.score += 10  
+        # enrollment.score += 10  
         enrollment.update_progress() 
         enrollment.save()
 
@@ -183,6 +187,43 @@ def enroll_in_course(request, lesson_id):
 
     print("Redirecting back to course detail page.")
     return redirect('courses_app:course_detail', course_id=course.id)
+
+
+# courses_app/views.py
+
+from django.shortcuts import render, get_object_or_404
+from .models import Lesson, Quiz
+
+def quiz_view(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    quiz = get_object_or_404(Quiz, lesson=lesson)
+    questions = quiz.questions.all()
+
+    return render(request, 'quiz.html', {
+        'lesson': lesson,
+        'quiz': quiz,
+        'questions': questions,
+    })
+
+
+def submit_quiz(request, lesson_id, quiz_id):
+    if request.method == 'POST':
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        questions = quiz.questions.all()
+        score = 0
+        total = questions.count()
+
+        for question in questions:
+            selected_option = request.POST.get(f'question_{question.id}')
+            if selected_option == question.correct_option:
+                score += 1
+
+        return JsonResponse({
+            'score': score,
+            'total': total,
+            'course_id': quiz.lesson.course.id  
+        })
+
 
 
 def get_course_progress(request, course_id):

@@ -41,7 +41,7 @@
     <!-- Right: Course Modules -->
     <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px;">
       <h3 style="font-size: 22px; font-weight: bold; color: #00ffcc; margin-bottom: 20px;">
-        <i class="ri-list-unordered" aria-label="Modules"></i> Course Modules
+        <i class="ri-list-unordered" aria-label="Modules"></i> Course Module
       </h3>
 
       {% if course.lessons.all %}
@@ -72,13 +72,27 @@
                   Your browser does not support the video tag.
                 </video>
               {% endif %}
+
+              <!-- Display Quiz Score if Quiz Exists -->
+              {% if lesson.quiz %}
+                <p style="color: #fff; font-size: 14px; margin-top: 10px;">
+                  Your quiz score: {{ lesson.quiz.score }} Points
+                </p>
+
+                <div style="text-align: right; margin-top: 20px;">
+                  <a href="{% url 'courses_app:quiz' lesson.id %}" style="padding: 8px 16px; font-size: 14px; color: #fff; background-color: #00ffcc; border-radius: 6px; text-decoration: none;">
+                    Take Quiz
+                  </a>
+                </div>
+              {% endif %}
+
             </div>
           {% endfor %}
         </div>
       {% else %}
         <p style="color: #999;">No modules available for this course.</p>
       {% endif %}
-      
+
       <!-- Total Score Display -->
       <div style="margin-top: 30px; padding: 20px; background-color: #333; border-radius: 10px;">
         <h4 style="color: #fff; font-size: 18px;">Total Score: {{ enrollment.score }} Points</h4>
@@ -95,6 +109,13 @@
 
 
 
+
+              <!-- Display Lesson Score -->
+              {% comment %} {% if lesson in enrollment.completed_lessons.all %}
+                <p style="color: #fff; font-size: 14px; margin-top: 10px;">
+                  You earned 10 points for completing this lesson!
+                </p>
+              {% endif %} {% endcomment %}
 
 
 

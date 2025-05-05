@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Mentor Support</h2>
+
+    <form method="post" action="{% url 'mentor_app:message' course.id mentor.id %}">
+        {% csrf_token %}
+        
+        <div class="form-group mt-3">
+            <label for="course">Select Course</label>
+            <select id="course" name="course_id" class="form-control" required>
+                <option value="{{ course.id }}">{{ course.title }}</option>
+                <!-- If listing multiple courses is needed, pass a list of courses and loop -->
+                {# 
+                {% for c in courses %}
+                    <option value="{{ c.id }}" {% if c.id == course.id %}selected{% endif %}>{{ c.title }}</option>
+                {% endfor %}
+                #}
+            </select>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="message">Your Message</label>
+            <textarea name="message" id="message" rows="4" class="form-control" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Send Message</button>
+    </form>
+</div>
+{% endblock %}

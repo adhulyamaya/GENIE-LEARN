@@ -1,63 +1,37 @@
+
 {% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
-<div class="chat-container" style="max-width: 600px; margin: 20px auto;">
-    <h2>Chat with Mentor</h2>
-    <div id="chat-box" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px;">
-        <!-- Messages will appear here -->
+<div class="container mt-4">
+    <h2>Mentor Support for {{ course.title }}</h2>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Mentor Information</h5>
+            <p><strong>Name:</strong> {{ mentor.full_name }}</p>
+            <p><strong>Email:</strong> {{ mentor.email }}</p>
+        </div>
     </div>
-    <form id="chat-form">
-        <input type="text" id="message-input" placeholder="Type your message..." style="width: 80%;" required />
-        <button type="submit">Send</button>
-    </form>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Student Information</h5>
+            <p><strong>Name:</strong> {{ student.full_name }}</p>
+            <p><strong>Email:</strong> {{ student.email }}</p>
+        </div>
+    </div>
+
+    {% comment %} {% if enrollment %}
+        <div class="alert alert-success mt-3">
+            You are enrolled in this course.
+        </div>
+        <a href="{% url 'mentor_app:mentor_support' course.id %}" class="btn btn-primary mt-2">Message Mentor</a>
+    {% else %}
+        <div class="alert alert-warning mt-3">
+            ⚠️ You are not enrolled in this course.
+        </div>
+    {% endif %} {% endcomment %}
 </div>
-
-<script>
-    const courseId = {{ course.id }};
-    const senderId = {{ student.id }};
-    const receiverId = {{ mentor.id }};
-    {% comment %} const socket = new WebSocket(
-        'ws://' + window.location.host + `/ws/chat/support/${courseId}`
-    ); {% endcomment %}
-
-    const socket = new WebSocket(
-    'ws://localhost:8000/ws/chat/support/' + courseId + '/'
-);
-
-
-    const chatBox = document.getElementById('chat-box');
-    const form = document.getElementById('chat-form');
-    const input = document.getElementById('message-input');
-
-    socket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        const messageElement = document.createElement('div');
-        messageElement.innerText = data.sender_id === senderId ? `You: ${data.message}` : `Mentor: ${data.message}`;
-        chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    };
-
-    socket.onopen = function() {
-        console.log('WebSocket connected');
-    };
-
-    socket.onclose = function() {
-        console.log('WebSocket disconnected');
-    };
-
-    form.onsubmit = function(e) {
-        e.preventDefault();
-        const message = input.value;
-        if (message.trim() === '') return;
-
-        socket.send(JSON.stringify({
-            'message': message,
-            'sender_id': senderId,
-            'receiver_id': receiverId
-        }));
-
-        input.value = '';
-    };
-</script>
 {% endblock %}
+

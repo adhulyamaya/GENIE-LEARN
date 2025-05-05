@@ -55,7 +55,7 @@ def register_view(request):
 
             login(request, user)
             messages.success(request, "Registration successful!")
-            return redirect('home')
+            return redirect('/')
 
         except IntegrityError:
             messages.error(request, "A database error occurred. Please try again.")

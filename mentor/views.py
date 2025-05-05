@@ -5,6 +5,7 @@ from user_app.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required 
 from courses_app.models import Course, ChatMessage
+from django.utils import timezone
 
 #create course view
 # def create_course(request):
@@ -98,70 +99,75 @@ def schedule_view(request):
     return render(request, 'schedule.html', {'courses': courses})
 
 
-# # message view
-# def message_view(request, ):
-#     course = get_object_or_404(Course, id=course_id)
-#     receiver = get_object_or_404(User, id=receiver_id) if receiver_id else None
-#     sender = request.user
+# def message_view(request, course_id, receiver_id=None):
+#     print(f"Request method: {request.method}")
+#     print(f"Course ID from URL: {course_id}")
+#     print(f"Receiver ID from URL: {receiver_id}")
 
-#     # Send message
+#     course = get_object_or_404(Course, id=course_id)
+#     print(f"Course fetched: {course.title}")
+
+#     sender = request.user
+#     print(f"Sender (logged in user): {sender.full_name}")
+
+#     receiver = get_object_or_404(User, id=receiver_id) if receiver_id else None
+#     if receiver:
+#         print(f"Receiver fetched: {receiver.full_name}")
+
 #     if request.method == 'POST':
-#         message_text = request.POST.get('message')
-#         if message_text:
+#         message_text = request.POST.get('message', '').strip()
+#         print(f"Message text from form: '{message_text}'")
+
+#         if message_text and receiver:
 #             ChatMessage.objects.create(
 #                 course=course,
 #                 sender=sender,
 #                 receiver=receiver,
 #                 message=message_text
 #             )
-#             return redirect('mentor:message', course_id=course.id, receiver_id=receiver.id)
+#             print(f"Message saved to DB from {sender.full_name} to {receiver.full_name} for course '{course.title}'")
 
-#     # View message history
-#     messages = ChatMessage.objects.filter(
-#         course=course,
-#         sender__in=[sender, receiver],
-#         receiver__in=[sender, receiver]
-#     ).order_by('timestamp') if receiver else []
+#         return redirect('mentor_app:message', course_id=course.id, receiver_id=receiver.id)
+
+#     elif request.method == 'GET' and receiver:
+#         messages = ChatMessage.objects.filter(
+#             course=course,
+#             sender__in=[sender, receiver],
+#             receiver__in=[sender, receiver]
+#         ).order_by('timestamp')
+#         print(f"Fetched {messages.count()} messages between {sender.full_name} and {receiver.full_name}")
+#     else:
+#         messages = []
+#         print("No receiver selected, no messages to fetch.")
 
 #     context = {
 #         'course': course,
 #         'receiver': receiver,
 #         'messages': messages
 #     }
-#     return render(request, 'mentor/messages.html', context)
+#     print("Rendering messages.html template")
+#     return render(request, 'messages.html', context)
 
 
-
-def message_view(request, course_id, receiver_id=None):
+def chat_with_mentor(request, course_id):
+    # Get the course details
     course = get_object_or_404(Course, id=course_id)
-    sender = request.user
-    receiver = get_object_or_404(User, id=receiver_id) if receiver_id else None
-
-    if request.method == 'POST':
-        message_text = request.POST.get('message', '').strip()
-        if message_text and receiver:
-            ChatMessage.objects.create(
-                course=course,
-                sender=sender,
-                receiver=receiver,
-                message=message_text
-            )
-        return redirect('mentor_app:message', course_id=course.id, receiver_id=receiver.id)
-
-    elif request.method == 'GET' and receiver:
-        messages = ChatMessage.objects.filter(
-            course=course,
-            sender__in=[sender, receiver],
-            receiver__in=[sender, receiver]
-        ).order_by('timestamp')
-    else:
-        messages = []
-
+    print(f"Accessing course: {course.title} (ID: {course.id})")
+    
+    # Get the mentor (author of the course)
+    mentor = course.author
+    print(f"Mentor: {mentor.full_name} (ID: {mentor.id})")
+    
+    # Get chat messages related to the course and between the user and the mentor
+    messages = ChatMessage.objects.filter(course=course, sender__in=[request.user, mentor], receiver__in=[request.user, mentor]).order_by('timestamp')
+    print(f"Fetched {messages.count()} messages for course {course.title} between {request.user.full_name} and {mentor.full_name}")
+    
+    # Define the context to be passed to the template
     context = {
         'course': course,
-        'receiver': receiver,
+        'mentor': mentor,
         'messages': messages
     }
-    return render(request, 'mentor/messages.html', context)
-
     
+    # Render the template
+    return render(request, 'mentor_chat.html', context)

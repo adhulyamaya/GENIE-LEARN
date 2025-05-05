@@ -87,7 +87,12 @@
 
 <div class="chat-container">
   <div class="chat-header">
+    {% if receiver %}
     <h3>Chat with {{ receiver.get_full_name|default:receiver.username }}</h3>
+    {% else %}
+    <h3>Chat with Unknown User</h3>
+    {% endif %}
+
     <p><strong>Course:</strong> {{ course.name }}</p>
   </div>
 
@@ -95,7 +100,7 @@
     {% for msg in messages %}
       <div class="message {% if msg.sender == request.user %}you{% else %}other{% endif %}">
         {{ msg.message }}
-        <small>{{ msg.sender.get_full_name|default:msg.sender.username }} • {{ msg.timestamp|date:"M d, Y H:i" }}</small>
+        <small>{{ msg.sender.get_full_name|default:msg.sender.full_name }} • {{ msg.timestamp|date:"M d, Y H:i" }}</small>
       </div>
     {% empty %}
       <p>No messages yet.</p>

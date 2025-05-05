@@ -11,7 +11,10 @@ urlpatterns = [
     path('completed_lessons/', views.completed_lesson, name='completed_lessons'),
     path('lesson/<int:lesson_id>/quiz/', views.quiz_view, name='quiz'),
     path('lesson/<int:lesson_id>/quiz/<int:quiz_id>/submit/', views.submit_quiz, name='submit_quiz'),
-    path('mentor_support/<int:course_id>/', views.mentor_support, name='mentor_support'),
+    
+
+
+    # path('mentor_support/<int:course_id>/', views.mentor_support, name='mentor_support'),
 
 ]
 

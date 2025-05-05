@@ -39,6 +39,14 @@
           <i class="ri-eye-line"></i> View
         </a>
       </div>
+
+      <a href="{% url 'mentor:chat' course.id %}" 
+      style="padding: 8px 16px; font-size: 14px; color: #00ffcc; border: 1px solid #00ffcc; border-radius: 6px; text-decoration: none;" 
+      onmouseover="this.style.background='#00ffcc'; this.style.color='#000';" 
+      onmouseout="this.style.background='transparent'; this.style.color='#00ffcc';">
+     <i class="ri-message-2-line"></i> Chat with Mentor
+   </a>
+   
     </div>
     {% empty %}
     <p style="text-align: center; color: #fff; font-size: 18px;">No courses available at the moment.</p>

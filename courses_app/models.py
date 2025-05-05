@@ -4,6 +4,7 @@ from django.db import models
 from django.db import models
 from django.conf import settings
 from user_app.models import User
+from django.db.models import Sum
 
     
 class Course(models.Model):
@@ -70,6 +71,12 @@ class Enrollment(models.Model):
         if total_lessons > 0:
             self.progress = (completed_lessons / total_lessons) * 100
         self.save()
+
+    def get_total_quiz_score(self):
+        lessons = self.course.lessons.all()
+        quizzes = Quiz.objects.filter(lesson__in=lessons)
+        total_score = QuizResult.objects.filter(user=self.user, quiz__in=quizzes).aggregate(total=Sum('score'))['total'] or 0
+        return total_score    
     
     def __str__(self):
         return f"{self.user.full_name} - {self.course.title}"

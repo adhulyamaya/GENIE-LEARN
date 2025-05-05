@@ -29,7 +29,8 @@
                 <div class="card-body d-flex flex-column justify-content-center align-items-center">
                     <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Top Candidate" class="img-fluid rounded-circle mb-3" style="width: 120px; height: 120px;">
                     <h4 class="card-title text-warning">🥇 {{ top_candidate.user.full_name}}</h4>
-                    <p class="card-text mt-2 fs-5"><strong>Score:</strong> <span class="text-success">{{ top_candidate.score }}</span></p>
+                    <p class="card-text mt-2 fs-5"><strong>Quiz Score:</strong> <span class="text-success">{{ top_candidate.total_quiz_score }}</span></p>
+
                     <p class="card-text"><strong>Course:</strong> {{ top_candidate.course.title }}</p>
                     <p class="mb-0"><strong>Progress:</strong> {{ top_candidate.progress|floatformat:0 }}%</p>
                     <p class="card-text"><strong>Enrolled On:</strong> {{ top_candidate.enrolled_on|date:"M d, Y" }}</p>
@@ -47,7 +48,6 @@
                         <div class="card-body text-center">
                             <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="img-fluid rounded-circle mb-3" style="width: 80px; height: 80px;" alt="Candidate">
                             <h5 class="card-title text-info fw-bold">{{ candidate.user.full_name |default:"Admin"}}</h5>
-                            <p class="mb-1"><strong>Score:</strong> {{ candidate.score }}</p>
                             <p class="mb-1"><strong>Course:</strong> {{ candidate.course.title }}</p>
                             <p class="mb-0"><strong>Progress:</strong> {{ candidate.progress|floatformat:0 }}%</p>
                         </div>

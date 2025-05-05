@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Lesson, Enrollment,Quiz, Question
+from .models import Course, Lesson, Enrollment,Quiz, Question, QuizResult
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'difficulty', 'category', 'price', 'is_published', 'created_at')
@@ -13,4 +13,5 @@ admin.site.register(Lesson)
 admin.site.register(Enrollment)
 admin.site.register(Quiz)
 admin.site.register(Question)
+admin.site.register(QuizResult)
 

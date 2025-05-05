@@ -4,6 +4,9 @@
 <div style="padding: 40px; background-color: #121212; min-height: 100vh; text-align: center; color: #fff;">
   <h2 style="color: #00ffcc;">{{ quiz.title }}</h2>
 
+  <!-- Error Alert -->
+  <div id="quiz-error" class="alert alert-danger d-none" role="alert"></div>
+
   <form id="quiz-form" method="POST" action="{% url 'courses_app:submit_quiz' lesson_id=quiz.lesson.id quiz_id=quiz.id %}">
     {% csrf_token %}
 
@@ -19,7 +22,7 @@
       </div>
     {% endfor %}
 
-    <button type="submit" style="padding: 10px 20px; background-color: #00ffcc; color: #000; border: none; border-radius: 6px;">
+    <button type="submit" id="submit-btn" style="padding: 10px 20px; background-color: #00ffcc; color: #000; border: none; border-radius: 6px;">
       Submit Quiz
     </button>
   </form>
@@ -35,8 +38,13 @@
       </div>
       <div class="modal-body">
         <p id="quiz-score-text">Calculating your score...</p>
-        <a id="back-to-course-btn" href="" class="btn" style="margin-top: 20px; background-color: #00ffcc; color: #000;">
+        <a id="back-to-course-btn" href="#" class="btn" style="margin-top: 20px; background-color: #00ffcc; color: #000;">
           Back to Course
+        </a>
+      </div>
+      <div style="text-align: center; margin-bottom: 20px;">
+        <a href="{% url 'landing' %}" style="padding: 10px 20px; font-size: 14px; background-color: #00ffcc; color: #000; text-decoration: none; border-radius: 6px; border: 1px solid #00ffcc;">
+          <i class="ri-arrow-left-line"></i> Back to Dashboard
         </a>
       </div>
     </div>
@@ -54,19 +62,25 @@
     const form = $(this);
     const url = form.attr('action');
     const data = form.serialize();
+    const errorDiv = $('#quiz-error');
+
+    // Disable button to prevent resubmission
+    $('#submit-btn').prop('disabled', true);
 
     $.post(url, data)
       .done(function(response) {
+        errorDiv.addClass('d-none').text(''); // Clear errors
         $('#quiz-score-text').text(`You scored ${response.score} out of ${response.total}!`);
-        $('#back-to-course-btn').attr('href', `/courses/${response.course_id}/`);  // replace with your course detail route if needed
-
+        $('#back-to-course-btn').attr('href', `/courses/${response.course_id}/`);
         const modal = new bootstrap.Modal(document.getElementById('quizResultModal'));
         modal.show();
       })
-      .fail(function() {
-        alert('Something went wrong. Please try again.');
+      .fail(function(xhr) {
+        const response = xhr.responseJSON;
+        const errorMsg = response && response.error ? response.error : 'Something went wrong. Please try again.';
+        errorDiv.removeClass('d-none').text(errorMsg);
+        $('#submit-btn').prop('disabled', false); 
       });
   });
 </script>
 {% endblock %}
-

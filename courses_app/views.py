@@ -14,7 +14,7 @@ from .utils import   filter_courses, rank_course
 from .models import Lesson, Enrollment
 from courses_app.models import Quiz
 from django.shortcuts import render, get_object_or_404
-from .models import Lesson, Quiz, Question
+from .models import Lesson, Quiz, Question, QuizResult
 from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
@@ -206,9 +206,17 @@ def quiz_view(request, lesson_id):
     })
 
 
+
 def submit_quiz(request, lesson_id, quiz_id):
     if request.method == 'POST':
         quiz = get_object_or_404(Quiz, id=quiz_id)
+        
+        # # Check for duplicate submission
+        # if QuizResult.objects.filter(user=request.user, quiz=quiz).exists():
+        #     return JsonResponse({
+        #         'error': 'You have already submitted this quiz.'
+        #     }, status=400)
+
         questions = quiz.questions.all()
         score = 0
         total = questions.count()
@@ -218,10 +226,19 @@ def submit_quiz(request, lesson_id, quiz_id):
             if selected_option == question.correct_option:
                 score += 1
 
+        # Save the result to the database
+        QuizResult.objects.create(
+            user=request.user,
+            quiz=quiz,
+            score=score,
+            total=total
+        )
+
         return JsonResponse({
             'score': score,
             'total': total,
-            'course_id': quiz.lesson.course.id  
+            'course_id': quiz.lesson.course.id,
+            'message': 'Quiz submitted successfully.'
         })
 
 
